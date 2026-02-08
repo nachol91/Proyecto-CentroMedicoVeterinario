@@ -8,57 +8,31 @@ import '../styles/HomePage.css'
 
 export default function HomePage({authAdmin, authUser, logInAdmin, logInUser}) {
   
-  
-
-  // const[emailsMedicos, setEmailsMedicos] = useState([]);
-  // const[emailsUsuarios, setEmailsUsuarios] = useState([]);
-  // const[passMedicos, setPassMedicos] = useState([]);
-  // const[passUsuarios, setPassUsuarios] = useState([]);
   const navigate = useNavigate();
 
-
-  // useEffect(()=> {
-  //   const medicosEmails = medicos.map(usuario => usuario.email);
-  //   setEmailsMedicos(medicosEmails);
-  // },[]);
-
-  //  useEffect(()=> {
-  //   const clientesEmails = listadoClientes.map(usuario => usuario.email);
-  //   setEmailsUsuarios(clientesEmails);
-  // },[]);
-
-  // useEffect(()=> {
-  //   const medicosPass = listadoMedicos.map(usuario => usuario.password);
-  //   setPassMedicos(medicosPass);
-  // },[]);
-
-  // useEffect(()=> {
-  //   const clientesPass = listadoClientes.map(usuario => usuario.password);
-  //   setPassUsuarios(clientesPass);
-  // },[]);
-  
 
 
   function logPageForm(e) {
     e.preventDefault();
 
     const mailIngresado = e.target.email.value;
-    console.log(mailIngresado);
+    
     const passIngresado = e.target.password.value;
-    console.log(passIngresado);
+    
 
     const medicos = JSON.parse(localStorage.getItem('medicos'));
-    console.log(medicos);
-    console.log(medicos.map(medico=>medico.email));
+    
+    const mailMedicos = medicos.map(medico=>medico.email);
+    
     const clientes = JSON.parse(localStorage.getItem('clientes'));
-    console.log(clientes);
-    console.log(clientes.map(cliente=>cliente.email));
+    
+    const mailClientes = clientes.map(cliente=>cliente.email);
 
 
-    if (mailIngresado === clientes.email && passIngresado === clientes.password){
+    if (mailClientes.includes(mailIngresado)){
       logInUser();
       navigate('/user')
-    }else if(mailIngresado === medicos.email && passIngresado === medicos.password){
+    }else if(mailMedicos.includes(mailIngresado)){
       logInAdmin();
       navigate('/admin')
     }else{
@@ -67,10 +41,6 @@ export default function HomePage({authAdmin, authUser, logInAdmin, logInUser}) {
 
   }
 
-
-
-
-  
   return (
     <main className="main-login">
 
@@ -99,3 +69,7 @@ export default function HomePage({authAdmin, authUser, logInAdmin, logInUser}) {
     </main>  
   )
 }
+
+
+
+  
