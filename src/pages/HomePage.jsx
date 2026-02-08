@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import {Form, Button} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { FloatingWhatsApp } from 'react-floating-whatsapp';
 import logo from '../assets/img/logo-sin-BG.png'
 import '../styles/HomePage.css'
 
@@ -63,12 +64,22 @@ export default function HomePage({authAdmin, authUser, logInAdmin, logInUser}) {
                         ingresar
                     </Button>
                 </Form>
-
+            
             </div>
 
+            <FloatingWhatsApp
+              phoneNumber="+5492214184682" 
+              accountName='CeDiVe'
+              statusMessage='En línea'
+              chatMessage='Hola, como puedo ayudarte?'/>
+              
     </main>  
   )
 }
+
+
+
+
 
 
 
