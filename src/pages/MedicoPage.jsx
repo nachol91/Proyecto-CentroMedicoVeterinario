@@ -1,5 +1,5 @@
 
-export default function AdminPage() {
+export default function MedicoPage() {
   return (
     <div>AdminPage</div>
   )
