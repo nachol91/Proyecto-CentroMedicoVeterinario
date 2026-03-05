@@ -1,6 +1,6 @@
 
 export default function MedicoPage() {
   return (
-    <div>AdminPage</div>
+    <div>MedicoPage</div>
   )
 }
