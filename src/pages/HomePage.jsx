@@ -1,46 +1,56 @@
-import {useState, useEffect} from 'react';
+
 import {Form, Button} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
+import { authLogin } from '../helpers/apiLogin';
 import logo from '../assets/img/logo-sin-BG.png'
 import '../styles/HomePage.css'
 
 
 
-export default function HomePage({authAdmin, authUser, logInAdmin, logInUser}) {
+export default function HomePage({logInAdmin, logInUser, logInMedico}) {
   
   const navigate = useNavigate();
 
 
 
-  function logPageForm(e) {
+  async function logPageForm(e) {
     e.preventDefault();
 
-    const mailIngresado = e.target.email.value;
+    const correo = e.target.email.value;
     
-    const passIngresado = e.target.password.value;
-    
+    const password = e.target.password.value;
 
-    const medicos = JSON.parse(localStorage.getItem('medicos'));
-    
-    const mailMedicos = medicos.map(medico=>medico.email);
-    
-    const clientes = JSON.parse(localStorage.getItem('clientes'));
-    
-    const mailClientes = clientes.map(cliente=>cliente.email);
+    const data = await authLogin({correo, password});
 
-
-    if (mailClientes.includes(mailIngresado)){
-      logInUser();
-      navigate('/user')
-    }else if(mailMedicos.includes(mailIngresado)){
-      logInAdmin();
-      navigate('/admin')
-    }else{
-      alert('Email o contraseña incorrecto')
+    if (data.msg && data.msg.includes("incorrectos")) {
+        alert(data.msg); // "correo o password incorrectos"//
+        return;
     }
 
-  }
+    if (data.token) {
+
+      localStorage.setItem('token', data.token);
+      
+      localStorage.setItem('usuario', JSON.stringify(data.usuario));
+    }
+
+   if (data.usuario.nivel === 'ADMIN') {
+        logInAdmin();
+        navigate('/admin');
+      } else if(data.usuario.nivel === 'USER') {
+        logInUser();
+        navigate('/user');
+      } else if(data.usuario.nivel === 'MEDICO') {
+        logInMedico();
+        navigate('/medico');
+      } else {
+        alert('No se pudo iniciar sesión. Intente nuevamente.');
+      }
+  } 
+
+
+  
 
   return (
     <main className="main-login">
@@ -76,6 +86,7 @@ export default function HomePage({authAdmin, authUser, logInAdmin, logInUser}) {
     </main>  
   )
 }
+
 
 
 

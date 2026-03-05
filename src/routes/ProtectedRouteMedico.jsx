@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 
-export default function ProtectedRouteAdmin({ children, authAdmin }) {
-  if (authAdmin) {
+export default function ProtectedRouteMedico({ children, authMedico }) {
+  if (authMedico) {
     return children;
   } else {
     return <Navigate to="/" />;
