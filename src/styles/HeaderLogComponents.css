@@ -1,1 +1,45 @@
-/*  */
+.header{
+    margin-top: 0;
+    height: 140px;
+    width: 100%;
+    background-color: rgb(177, 167, 201);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-header{
+    display: flex;
+    align-items: center;
+}
+
+.nombre-usuario{
+    margin-left: 30px;
+    margin-bottom: 0px;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.imagen-logo{
+    width: 100px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.imagen-logo img{
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    
+    
+}
+
+.info-usuario{
+    display: flex;
+    margin-right: 30px;
+    align-items: center;
+    
+}
