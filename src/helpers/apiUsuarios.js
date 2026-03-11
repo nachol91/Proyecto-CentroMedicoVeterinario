@@ -6,7 +6,7 @@ export const getUsuarios = async (desde = 0) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch((url + "?limite" + limite + "&desde" + desde), {
+    const resp = await fetch(url + "?limite" + limite + "&desde" + desde, {
       method: "GET",
       headers: {
         "content-type": "application/json; charset=UTF-8",
@@ -22,7 +22,7 @@ export const getUsuarios = async (desde = 0) => {
   }
 };
 
-export const getUsuariosByID = async (id) => {
+export const getUsuarioByID = async (id) => {
   const token = localStorage.getItem("token");
 
   try {
@@ -66,3 +66,67 @@ export const actualizarUsuario = async (id, datos) => {
     throw error;
   }
 };
+
+export const deleteUsuario = async (id) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const resp = await fetch(url + "/" + id, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        "x-token": token,
+      },
+    });
+
+    const data = await resp.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return { msg: "No se conectó con la base de datos!" };
+  }
+};
+
+export const postUsuario = async (datos) => {
+  
+  const token = localStorage.getItem("token");
+  
+  const resp = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(datos),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      "x-token": token,
+    }
+  });
+
+  const data = await resp.json();
+
+  if (!resp.ok) {
+  throw new Error(data.message || 'El usuario ya se encuentra registrado en la base de datos');
+  }
+
+  return data;     
+    
+}
+
+export const patchUsuario = async (id) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const resp = await fetch(url + "/" + id, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        "x-token": token,
+      },
+    });
+
+    const data = await resp.json();
+    return data;    
+  } catch (error) {
+    console.error(error);
+    return { msg: "no se conectó con la base de datos!"}
+    
+  }
+}

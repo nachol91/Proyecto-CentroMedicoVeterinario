@@ -7,7 +7,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import logo from "../assets/img/logo-sin-BG.png";
 import avatar from "../assets/icons/icono-avatar.png";
-import "../styles/HeaderLogComponents.css";
+import "../styles/HeaderComponents.css";
 
 export default function HeaderComponents() {
   
@@ -48,14 +48,14 @@ export default function HeaderComponents() {
     
     const {correo, telefono, passwordActual, nuevoPassword, confirmarPassword} = formData;
 
- if (nuevoPassword.length > 0) {
-    if (nuevoPassword !== confirmarPassword) {
-      return alert("Las nuevas contraseñas no coinciden");
-    }
-    if (nuevoPassword.length < 8) {
-      return alert("La nueva contraseña debe tener al menos 8 caracteres");
-    }
-  }
+    if (nuevoPassword.length > 0) {
+        if (nuevoPassword !== confirmarPassword) {
+          return alert("Las nuevas contraseñas no coinciden");
+        }
+        if (nuevoPassword.length < 8) {
+          return alert("La nueva contraseña debe tener al menos 8 caracteres");
+        }
+      }
     const datosNuevos = {
       correo: correo,
       telefono: Number(telefono),
@@ -64,7 +64,7 @@ export default function HeaderComponents() {
     };
 
     try {
-      
+          
       const resultados = await actualizarUsuario(idUsuario, datosNuevos);   
 
       if(resultados){
@@ -72,12 +72,11 @@ export default function HeaderComponents() {
         alert("los datos se actualizaron correctamente")
         setFormData({...formData, passwordActual: '', nuevoPassword: '', confirmarPassword: '',});
         handleClose();
+      }          
+      }catch (error) {
+        console.error(error);
+        alert(error.message || "error al conectar al servidor")
       }
-      
-    } catch (error) {
-      console.error(error);
-      alert(error.message || "error al conectar al servidor")
-    }
   }  
   
   const [show, setShow] = useState(false);
@@ -141,9 +140,11 @@ export default function HeaderComponents() {
         </div>
       </div>
       <Modal show={show} onHide={handleClose}>
+        
         <Modal.Header closeButton>
           <Modal.Title>Mis Datos</Modal.Title>
         </Modal.Header>
+        
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="correo">
@@ -165,10 +166,10 @@ export default function HeaderComponents() {
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Confirmar contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
               <Form.Control type="password" name='confirmarPassword' placeholder='repita la contraseña' value={formData.confirmarPassword} rows={3} onChange={handleChange} />
-            </Form.Group>
-            
+            </Form.Group>            
           </Form>
         </Modal.Body>
+
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cerrar
@@ -177,6 +178,7 @@ export default function HeaderComponents() {
             Guardar cambios
           </Button>
         </Modal.Footer>
+
       </Modal>
     </section>
   );

@@ -1,6 +1,8 @@
+import "../styles/FooterComponents.css"
+
 
 export default function FooterComponents() {
   return (
-    <div>FooterComponents</div>
+    <div className="footer">FooterComponents</div>
   )
 }

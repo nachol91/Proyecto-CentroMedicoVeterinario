@@ -1,1 +1,174 @@
-/*  */
+.admin-page {
+  display: flex;
+  align-items: flex-start; 
+  gap: 20px;
+  padding: 20px;
+  min-height: 100vh;
+  
+}
+
+/* Aside */
+.aside-main {
+  width: 300px;
+  margin-top: 80px;
+  background-color: #e0d9ff;
+  height: fit-content;  
+  position: sticky;
+  top: 100px; 
+  border: 1px solid #d1c9f0; 
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+  z-index: 100;
+}
+
+.aside-nav {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2.5rem;
+}
+
+/* Botones del Menú */
+.aside-item {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 1.2rem 2rem;
+  color: #444;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-left: 6px solid transparent;
+  text-align: left;
+}
+
+.aside-item:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.aside-item.active {
+  color: #6f42c1; 
+  background-color: rgba(255, 255, 255, 0.6);
+  border-left: 6px solid #6f42c1; 
+  font-weight: 600;
+}
+
+
+.aside-custom-icon {
+  width: 28px;   
+  height: 28px;
+  margin-right: 1.2rem;
+  object-fit: contain; 
+  transition: filter 0.3s ease;
+}
+
+.aside-item.active .aside-custom-icon {
+  filter: drop-shadow(0px 0px 1px rgba(111, 66, 193, 0.3));
+}
+
+
+/* Footer del Aside (Sección WhatsApp) */
+.aside-footer {
+    text-align: center;
+    padding: 0 1.5rem;
+}
+
+.aside-footer hr {
+    border: 0;
+    border-top: 1px solid #c4b9f5;
+    margin-bottom: 1.2rem;
+    opacity: 1;
+}
+
+.aside-footer p {
+    font-size: 0.85rem;
+    color: #5d5d5d;
+    margin-bottom: 0.8rem;
+    padding: 0 10px;
+}
+
+.whatsapp-custom-icon {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.whatsapp-custom-icon:hover {
+    transform: scale(1.15) rotate(5deg);
+}
+
+
+/* Contenido Principal (Derecha) */
+.content-main {
+  flex: 1;
+  /* padding: 3rem; */
+  overflow-y: auto; 
+}
+
+.content-main h1, h2 {
+  text-align: center;
+  margin-bottom: 2rem; 
+  color: #4a4a4a;      
+}
+
+/* tarjetas del inicio */
+.tarjetas {
+  display: flex;
+  justify-content: center; 
+  gap: 20px;               
+  /* flex-wrap: wrap;          */
+  margin-top: 30px;
+}
+
+.custom-card {
+  width: 300px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  background-color: #f3f0ff !important;
+  text-align: center;
+  justify-content: space-between;
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-img-custom {
+  height: 250px;
+  width: 100%;
+  object-fit: cover;
+  padding: 0;            
+}
+
+.custom-card .card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.custom-card .card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.btn-violeta {
+  padding: 0.8rem 1.5rem !important;
+  font-size: 1.1rem !important;
+  background-color: #6f42c1 !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.btn-violeta:hover {
+  background-color: #5a32a3 !important;
+}

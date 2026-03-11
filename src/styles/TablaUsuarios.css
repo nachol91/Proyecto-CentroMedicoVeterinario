@@ -1,0 +1,23 @@
+.table td:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;             
+  align-items: center;  
+  justify-content: center;
+}
+
+.table td:last-child .btn {
+  width: 100%;
+  max-width: 100px; 
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+
+.btn-modificar{
+  background-color: #6f42c1 !important;
+  border: none !important;
+}
+
+.btn-modificar:hover{
+  background-color: #5a32a3 !important;
+}
