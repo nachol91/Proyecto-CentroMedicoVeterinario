@@ -55,7 +55,7 @@ const AppLayout = () => {
   };
 
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       {mostrarHeader && <HeaderComponents />}
 
       <main>
@@ -106,7 +106,7 @@ const AppLayout = () => {
       </main>
 
       {mostrarFooter && <FooterComponents />}
-    </>
+    </div>
   );
 };
 
