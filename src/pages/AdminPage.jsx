@@ -215,7 +215,7 @@ export default function AdminPage() {
             className={`aside-item ${activeTab === "turnos" ? "active" : ""}`}
             onClick={() => setActiveTab("turnos")}>
             <img src={turnos} alt="Turnos" className="aside-custom-icon" />
-            <span>Mis Turnos</span>
+            <span>Turnos</span>
           </button>
 
         </nav>
@@ -300,7 +300,7 @@ export default function AdminPage() {
           <Form id="form-nuevo-usuario" onSubmit={handleSave} >
             <Form.Group className="mb-3" controlId="nombre">
               <Form.Label>Nombre</Form.Label>
-              <Form.Control type="text" name='nombre' placeholder="ingresa el nombre"/>
+              <Form.Control type="text" name='nombre' placeholder="ingresa el nombre" autoFocus/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="apellido">
               <Form.Label>apellido</Form.Label>
@@ -308,7 +308,7 @@ export default function AdminPage() {
             </Form.Group>            
             <Form.Group className="mb-3" controlId="correo">
               <Form.Label>correo</Form.Label>
-              <Form.Control type="email" name='correo' placeholder="ingresa el correo" autoFocus/>
+              <Form.Control type="email" name='correo' placeholder="ingresa el correo" />
             </Form.Group>
             <Form.Group className="mb-3" controlId="telefono">
               <Form.Label>Telefono</Form.Label>

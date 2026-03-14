@@ -104,9 +104,6 @@ export default function HeaderComponents() {
       navigate("/");
     }
   };
-
-  
-
   
   return (
     <section className="header">

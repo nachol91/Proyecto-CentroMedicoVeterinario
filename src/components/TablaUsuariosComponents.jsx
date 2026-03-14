@@ -31,14 +31,13 @@ export default function TablaUsuariosComponents({ abrirEditor, usuarios, obtener
                                 <td>{usuario.fechaRegistro}</td>
                                 <td>Mascotas</td>
                                 <td>
-                                    {usuario.nivel !== "ADMIN" && (
-                                        <Button variant="danger" onClick={() => { eliminarUsuario(usuario._id) }}>
-                                            Eliminar
-                                        </Button>)}
-                                    {usuario.nivel !== "ADMIN" && (
-                                        <Button className="btn-modificar" onClick={() => abrirEditor(usuario)}>
-                                            Modificar
-                                        </Button>)}
+                                    <Button variant="danger" onClick={() => { eliminarUsuario(usuario._id) }}>
+                                        Eliminar
+                                    </Button>
+                                    
+                                    <Button className="btn-modificar" onClick={() => abrirEditor(usuario)}>
+                                        Modificar
+                                    </Button>                                        
                                 </td>
                             </tr>
                         );
