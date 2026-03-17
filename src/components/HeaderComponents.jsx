@@ -13,52 +13,42 @@ export default function HeaderComponents() {
   
   const navigate = useNavigate();
   
-  const userRaw = localStorage.getItem("usuario");
+  const usuarioLocal = localStorage.getItem("usuario");
   
-  const userData = (userRaw && userRaw !== "undefined") ? JSON.parse(userRaw) : null;
+  const userData = (usuarioLocal && usuarioLocal !== "undefined") ? JSON.parse(usuarioLocal) : null;
   
   const idUsuario = userData?._id || userData?.uid || userData?.id;
-  const correoUsuario = userData.correo
-  const telefonoUsuario = userData.telefono
-  const nombreUsuario = userData.nombre 
-  const apellidoUsuario = userData.apellido
-  const imgUsuario = userData.img;
+  const { nombre, apellido, correo, telefono, img } = userData || {};
 
-  const [formData, setFormData] = useState({
-    correo: '',
-    telefono: '',
-    passwordActual: '',
-    nuevoPassword: '',      
-    confirmarPassword: ''
-  });
+  const [show, setShow] = useState(false);
   
-  const handleChange = (e) => {
+  const handleClose = () => setShow(false);
 
-    const { name, value } = e.target;
-    
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+  const handleShow = () => setShow(true);
+  
   
   const handleSave = async (e) =>{
   
-    if (e) e.preventDefault();
+    e.preventDefault();
     
-    const {correo, telefono, passwordActual, nuevoPassword, confirmarPassword} = formData;
+    const nuevoCorreo = e.target.correo.value;
+    const nuevoTelefono = e.target.telefono.value;
+    const passwordActual = e.target.passwordActual.value;
+    const nuevoPassword = e.target.nuevoPassword.value;
+    const confirmarPassword = e.target.confirmarPassword.value;
 
-    if (nuevoPassword.length > 0) {
+    if (nuevoPassword) {
         if (nuevoPassword !== confirmarPassword) {
           return alert("Las nuevas contraseñas no coinciden");
         }
         if (nuevoPassword.length < 8) {
           return alert("La nueva contraseña debe tener al menos 8 caracteres");
         }
-      }
+    };
+
     const datosNuevos = {
-      correo: correo,
-      telefono: Number(telefono),
+      correo: nuevoCorreo,
+      telefono: nuevoTelefono,
       passwordActual: passwordActual || undefined, 
       password: nuevoPassword || undefined
     };
@@ -70,37 +60,19 @@ export default function HeaderComponents() {
       if(resultados){
         localStorage.setItem("usuario", JSON.stringify(resultados.usuario));
         alert("los datos se actualizaron correctamente")
-        setFormData({...formData, passwordActual: '', nuevoPassword: '', confirmarPassword: '',});
-        handleClose();
-      }          
+        handleClose();}          
       }catch (error) {
         console.error(error);
         alert(error.message || "error al conectar al servidor")
       }
-  }  
-  
-  const [show, setShow] = useState(false);
-  
-  const handleClose = () => setShow(false);
-
-  const handleShow = () =>{
-    setFormData({
-      correo:  correoUsuario,
-      telefono: telefonoUsuario,
-      passwordActual: '',
-      nuevoPassword: '', 
-      confirmarPassword: ''
-    });
-    setShow(true);  
-  }; 
+  };
   
   const cerrarSesion = (e) => {
-
     e.preventDefault();
+    
     const confirmar = window.confirm("Esta seguro que desea cerrar sesión?");
     if (confirmar) {
-      localStorage.removeItem("usuario");
-      localStorage.removeItem("token");
+      localStorage.clear();
       navigate("/");
     }
   };
@@ -111,19 +83,19 @@ export default function HeaderComponents() {
         <div className="imagen-logo">
           <img src={logo} alt="imagen del header" />
         </div>
-        <p className="nombre-usuario">Bienvenido {nombreUsuario}!</p>
+        <p className="nombre-usuario">Bienvenido {nombre}!</p>
       </div>
       <div className="info-usuario">
         <div className="logo-usuario">
           <img
-            src={imgUsuario ? imgUsuario : avatar}
+            src={img ? img : avatar}
             alt="avatar del usuario"
           />
         </div>
         <div className="menu-sesion">
           <Dropdown>
             <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-              {nombreUsuario} {apellidoUsuario}
+              {nombre} {apellido}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={handleShow}>
@@ -136,33 +108,34 @@ export default function HeaderComponents() {
           </Dropdown>
         </div>
       </div>
+
       <Modal show={show} onHide={handleClose}>
         
         <Modal.Header closeButton>
-          <Modal.Title>Mis Datos</Modal.Title>
+          <Modal.Title>Mis Datos Personales</Modal.Title>
         </Modal.Header>
         
         <Modal.Body>
-          <Form>
+          <Form id="form-mis-datos" onSubmit={handleSave}>
             <Form.Group className="mb-3" controlId="correo">
-              <Form.Label>correo</Form.Label>
-              <Form.Control type="email" name='correo' value={formData.correo} onChange={handleChange} autoFocus/>
+              <Form.Label>Correo</Form.Label>
+              <Form.Control type="email" name='correo' defaultValue={correo} autoFocus/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="telefono">
               <Form.Label>Telefono</Form.Label>
-              <Form.Control type="number" name='telefono' value={formData.telefono} onChange={handleChange} rows={3} />
+              <Form.Control type="tel" name='telefono' defaultValue={telefono} rows={3} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Contraseña actual(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='passwordActual' placeholder='ingresa tu contraseña actual' value={formData.passwordActual} rows={3} onChange={handleChange} />
+              <Form.Control type="password" name='passwordActual' placeholder='ingresa tu contraseña actual'/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Nueva contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='nuevoPassword' placeholder='ingrese la nueva contraseña (min 8 caracteres)' value={formData.nuevoPassword} rows={3} onChange={handleChange} />
+              <Form.Control type="password" name='nuevoPassword' placeholder='ingrese la nueva contraseña (min 8 caracteres)'/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Confirmar contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='confirmarPassword' placeholder='repita la contraseña' value={formData.confirmarPassword} rows={3} onChange={handleChange} />
+              <Form.Control type="password" name='confirmarPassword' placeholder='repita la contraseña'/>
             </Form.Group>            
           </Form>
         </Modal.Body>
@@ -171,7 +144,7 @@ export default function HeaderComponents() {
           <Button variant="secondary" onClick={handleClose}>
             Cerrar
           </Button>
-          <Button variant="primary" onClick={handleSave}>
+          <Button variant="primary" type='submit' form='form-mis-datos'>
             Guardar cambios
           </Button>
         </Modal.Footer>
