@@ -1,13 +1,13 @@
 import { Table, Button } from 'react-bootstrap';
 import "../styles/TablaMedicos.css";
 
-export default function TablaMedicosComponents({ obtenerUsuarios, usuarios, eliminarUsuario, abrirEditor }){
+export default function TablaMedicosComponents({ usuarios, eliminarUsuario, abrirEditor }){
 
 
     return (
     <div>
         <section>
-            <Table striped bordered hover>
+            <Table responsive bordered hover>
                 <thead>
                     <tr>
                         <th>Nombre</th>
