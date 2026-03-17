@@ -15,32 +15,28 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import TablaUsuarios from "../components/TablaUsuariosComponents";
 import TablaMedicos from "../components/TablaMedicosComponents";
+import TablaMascotas from "../components/TablaMascotas";
 import { postUsuario, actualizarUsuario, patchUsuario, getUsuarios, deleteUsuario } from "../helpers/apiUsuarios";
+import { mascotasGetIdDueno, mascotaPost, mascotaDelete, mascotaPut, patchMascota } from "../helpers/apiMascotas";
 import "../styles/AdminPage.css";
 
 
 export default function AdminPage() {
-  const [usuarioAEditar, setUsuarioAEditar] = useState(null);
-  
+
+  // hooks y funciones de usuarios//
   const [activeTab, setActiveTab] = useState("inicio");
 
-  const [show, setShow] = useState(false);
-  
-  const [showEdit, setShowEdit] = useState(false);
-
   const [usuarios, setUsuarios] = useState([]); 
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);  
   
-  const [formData, setFormData] = useState({
-    id: "",
-    nombre: "",
-    apellido: "",
-    correo: "",
-    telefono: "",
-    rol: "",
-    estado: "true",
-    nuevoPassword: "",
-    confirmarPassword: ""
-  });
+  const [usuarioAEditar, setUsuarioAEditar] = useState();
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => {
+    setShowEdit(false);
+    setUsuarioAEditar();
+  };  
 
   useEffect(() => {
     obtenerUsuarios();
@@ -59,8 +55,6 @@ export default function AdminPage() {
 
     try {
       await deleteUsuario(id);
-      setUsuarios(usuarios.filter(usuario => usuario._id !== id));
-
       alert("Usuario eliminado con éxito!");
       obtenerUsuarios()
       
@@ -69,10 +63,6 @@ export default function AdminPage() {
       alert("No se pudo eliminar el usuario. Inténtelo de nuevo más tarde.");
     }
   };
-
-  const handleClose = () => setShow(false);
-
-  const handleShow = () => setShow(true);  
    
   const handleSave = async(e) =>{
     
@@ -111,34 +101,10 @@ export default function AdminPage() {
       console.error(error);
       alert(error.message || "error al conectar al servidor")
     }
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-  
-  const handleCloseEdit = () => {
-    setShowEdit(false);
-    setUsuarioAEditar(null);
   };
 
-  const handleModificarClick = (usuario) => {
-  setUsuarioAEditar(usuario); 
-  
-  setFormData({
-    id: usuario._id,
-    nombre: usuario.nombre,
-    apellido: usuario.apellido,
-    correo: usuario.correo,
-    telefono: usuario.telefono,
-    nivel: usuario.nivel,
-    estado: usuario.estado.toString() 
-  });
-  
+  const edicionUsuarioClick = (usuario) => {
+  setUsuarioAEditar(usuario);   
   setShowEdit(true);
   };
 
@@ -146,21 +112,24 @@ export default function AdminPage() {
     e.preventDefault();
     
     try {
-      const id = formData.id;
-      const nuevoEstadoBooleano = formData.estado === "true";
+      const id = usuarioAEditar._id;
+      const nuevoEstado = e.target.estado.value === "true";
 
-      if (nuevoEstadoBooleano !== usuarioAEditar.estado) {
-        await patchUsuario(id, { estado: nuevoEstadoBooleano });
+      if (nuevoEstado !== usuarioAEditar.estado) {
+        await patchUsuario(id, { estado: nuevoEstado });
       }
 
-      if (formData.nuevoPassword && formData.nuevoPassword !== formData.confirmarPassword) {
+      const password = e.target.nuevoPassword.value;
+      const confirmar = e.target.confirmarPassword.value;
+
+      if (password && password !== confirmar) {
         return alert("Las contraseñas no coinciden");
       }
 
       const datosModificados = {
-        correo: formData.correo,
-        telefono: formData.telefono,
-        password: formData.nuevoPassword || undefined 
+        correo: e.target.correo.value,
+        telefono: e.target.telefono.value,
+        password: password || undefined 
       };
 
       const resultado = await actualizarUsuario(id, datosModificados);
@@ -177,6 +146,128 @@ export default function AdminPage() {
       alert("Error al actualizar: " + error.message);
     }
   };
+
+  //hooks y funciones de mascotas//
+
+  const [mascotas, setMascotas] = useState([]);
+  const [showModalMascotas, setShowModalMascotas] = useState(false);
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState();
+
+  const [historiaSeleccionada, setHistoriaSeleccionada] = useState("");
+  const [showModalHistoria, setShowModalHistoria] = useState(false);
+  const [nombreMascotaHistoria, setNombreMascotaHistoria] = useState("");
+
+  const [showCrearMascota, setShowCrearMascota] = useState(false);
+  const medicoLogueado = JSON.parse(localStorage.getItem("usuario"));
+
+  const [showEditMascota, setShowEditMascota] = useState(false);
+  const [mascotaAEditar, setMascotaAEditar] = useState();
+
+
+  const handleCrearMascota = async (e) => {
+    e.preventDefault();
+    
+    const nombre = e.target.nombre.value;
+    const especie = e.target.especie.value;
+    const raza = e.target.raza.value;
+    const edad = e.target.edad.value;
+    const sexo = e.target.sexo.value;
+    const peso = e.target.peso.value;
+    const historiaClinica = e.target.historiaClinica.value;
+    
+    const dataMascota = {
+        nombre,
+        especie,
+        raza: raza || "mestizo",
+        edad: Number(edad),
+        sexo,
+        peso: Number(peso),
+        historiaClinica: historiaClinica || "",
+        dueno: usuarioSeleccionado._id, 
+        medicoQueCrea: medicoLogueado._id 
+    };
+
+    try {
+      const resultado = await mascotaPost(dataMascota);
+      if (resultado) {
+        alert("Mascota creada con éxito");
+        e.target.reset();
+        setShowCrearMascota(false);
+  
+        handleVerMascotas(usuarioSeleccionado); 
+      };      
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "error al conectar al servidor")      
+    }
+    
+  };
+
+  const handleVerMascotas = async(usuario) =>{
+    setUsuarioSeleccionado(usuario);
+    
+    const data = await mascotasGetIdDueno(usuario._id);
+
+    setMascotas(data.mascotas || []);
+    setShowModalMascotas(true);
+  };
+
+  const handleVerHistoria = (texto, nombre) => {
+    setHistoriaSeleccionada(texto || "Esta mascota aún no tiene historia clínica registrada.");
+    setNombreMascotaHistoria(nombre);
+    setShowModalHistoria(true);
+  };
+
+  const handleEliminarMascota = async (id) => {
+  const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta mascota?");
+  if (!confirmar) return;
+
+  try {
+    const resultado = await mascotaDelete(id);
+    if (resultado) {
+      alert("Mascota eliminada con éxito");
+      handleVerMascotas(usuarioSeleccionado);
+    }
+  } catch (error) {
+    alert("Error al eliminar la mascota");
+  }
+};
+
+const edicionMascotaClick = (mascota) => {
+  setMascotaAEditar(mascota);
+  setShowEditMascota(true);
+};
+
+const handleUpdateMascota = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const id = mascotaAEditar._id;
+      const nuevoEstado = e.target.estado.value === "true";
+      if(nuevoEstado !== mascotaAEditar.estado){
+        await patchMascota(id, {estado: nuevoEstado});
+      }
+
+      const dataUpdate = {
+        peso: Number(e.target.peso.value),
+        edad: Number(e.target.edad.value), 
+        NuevaHistoriaClinica: e.target.nuevaHistoria.value
+      };
+    
+        const resultado = await mascotaPut(mascotaAEditar._id, dataUpdate);
+        
+        if (resultado) {
+            alert("¡Registro actualizado con éxito!");
+            setShowEditMascota(false);
+            e.target.reset(); 
+            handleVerMascotas(usuarioSeleccionado);
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Error al actualizar los datos");
+    }
+};
+
 
   return (
     <main className="admin-page">
@@ -275,22 +366,24 @@ export default function AdminPage() {
         {activeTab === "pacientes" && (
           <div>
             <h1>Gestión de Usuarios-Mascotas</h1>
-            <TablaUsuarios usuarios={usuarios} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={handleModificarClick}/>
+            <TablaUsuarios usuarios={usuarios} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={edicionUsuarioClick} handleVerMascotas={handleVerMascotas}/>
             <Button className="btn-violeta" onClick={handleShow}>Crear Usuario</Button>
           </div>
         )}
         {activeTab === "medicos" && (
           <div>
             <h1>Gestión de Médicos</h1>
-            <TablaMedicos usuarios={usuarios} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={handleModificarClick}/>
+            <TablaMedicos usuarios={usuarios} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={edicionUsuarioClick}/>
             <Button className="btn-violeta" onClick={handleShow}>Crear Médico</Button>
           </div>
         )}
         {activeTab === "turnos" && <h1>Gestión de Turnos</h1>}
         {activeTab === "recetas" && <h1>Gestión de Recetas</h1>}
       </section>
-
-      <Modal show={show} onHide={handleClose}>
+      
+      {/* //modales usuarios// */}
+    
+      <Modal className="crear-usuario" show={show} onHide={handleClose}>
         
         <Modal.Header closeButton>
           <Modal.Title>Nuevo Usuario</Modal.Title>
@@ -340,36 +433,36 @@ export default function AdminPage() {
         
       </Modal>
       
-      <Modal show={showEdit} onHide={handleCloseEdit}>
+      <Modal className="modificar-usuario" show={showEdit} onHide={handleCloseEdit}>
         
         <Modal.Header closeButton>
-          <Modal.Title>Datos Usuario</Modal.Title>
+          <Modal.Title>Editar Usuario: {usuarioAEditar?.nombre} {usuarioAEditar?.apellido}</Modal.Title>
         </Modal.Header>
             
         <Modal.Body>
           <Form id="form-editar-usuario" onSubmit={handleUpdate}>
             <Form.Group className="mb-3" controlId="correo">
               <Form.Label>correo</Form.Label>
-              <Form.Control type="email" name='correo' value={formData.correo} onChange={handleChange} autoFocus/>
+              <Form.Control type="email" name='correo' defaultValue={usuarioAEditar?.correo} autoFocus/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="telefono">
               <Form.Label>Telefono</Form.Label>
-              <Form.Control type="tel" name='telefono' value={formData.telefono} onChange={handleChange} rows={3} />
+              <Form.Control type="tel" name='telefono' defaultValue={usuarioAEditar?.telefono} rows={3} />
             </Form.Group>
             <Form.Group>
               <Form.Label>Estado</Form.Label>
-              <Form.Select name = "estado" value={formData.estado} onChange={handleChange}>
+              <Form.Select name = "estado" defaultValue={usuarioAEditar?.estado}>
                 <option value="true">Habilitado</option>
                 <option value="false">Deshabilitado</option>
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Nueva contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='nuevoPassword' placeholder='ingrese la nueva contraseña (min 8 caracteres)' value={formData.nuevoPassword} rows={3} onChange={handleChange} />
+              <Form.Control type="password" name='nuevoPassword' placeholder='ingrese la nueva contraseña (min 8 caracteres)'/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Confirmar contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='confirmarPassword' placeholder='repita la contraseña' value={formData.confirmarPassword} rows={3} onChange={handleChange} />
+              <Form.Control type="password" name='confirmarPassword' placeholder='repita la contraseña'/>
             </Form.Group>            
           </Form>
         </Modal.Body>
@@ -383,6 +476,146 @@ export default function AdminPage() {
           </Button>
         </Modal.Footer>
 
+      </Modal>
+
+      {/* modales mascotas */}
+
+      <Modal className="modal-principal-mascota" show={showModalMascotas} onHide={() => setShowModalMascotas(false)} size="xl">
+        <Modal.Header closeButton>
+          <Modal.Title>Mascotas de: {usuarioSeleccionado?.nombre} {usuarioSeleccionado?.apellido}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>        
+          <TablaMascotas mascotas={mascotas}  handleVerHistoria={handleVerHistoria} handleEliminarMascota={handleEliminarMascota} abrirEditor={edicionMascotaClick}/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModalMascotas(false)}>
+            Cerrar
+          </Button>
+          <Button className="btn-modificar" onClick={() => setShowCrearMascota(true)}>
+            Agregar Nueva Mascota
+        </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal className="modal-ver-historia" show={showModalHistoria} onHide={() => setShowModalHistoria(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Historia Clínica: {nombreMascotaHistoria}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="p-3 bg-light border rounded">
+            <p style={{ whiteSpace: 'pre-wrap' }}>{historiaSeleccionada}</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModalHistoria(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal className="crear-mascota" show={showCrearMascota} onHide={() => setShowCrearMascota(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Nueva Mascota para {usuarioSeleccionado?.nombre} {usuarioSeleccionado?.apellido}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form id="form-nueva-mascota" onSubmit={handleCrearMascota}>
+            <Form.Group className="mb-3" controlId="nombre">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control type="text" name="nombre" placeholder="Nombre de la mascota" required autoFocus />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="especie">
+              <Form.Label>Seleccione especie</Form.Label>
+              <Form.Select name="especie" required>
+                <option value="CANINO">CANINO</option>
+                <option value="FELINO">FELINO</option>
+                <option value="OTRO">OTRO</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="raza">
+              <Form.Label>Raza</Form.Label>
+              <Form.Control type="text" name="raza" placeholder="Ej: Mestizo, Labrador..." />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="edad">
+              <Form.Label>Edad</Form.Label>
+              <Form.Control type="number" name="edad" placeholder="Edad en años" required />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="sexo">
+              <Form.Label>Seleccione sexo</Form.Label>
+              <Form.Select name="sexo" required>
+                <option value="MACHO">MACHO</option>
+                <option value="HEMBRA">HEMBRA</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="peso">
+              <Form.Label>Peso</Form.Label>
+              <Form.Control type="number" name="peso" step="0.001" placeholder="Peso en kg" required />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="historiaClinica">
+              <Form.Label>Historia Clínica</Form.Label>
+              <Form.Control as="textarea" name="historiaClinica" rows={3} placeholder="Historia Clínica" />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCrearMascota(false)}>
+            Cerrar
+          </Button>
+          <Button variant="primary" type="submit" form="form-nueva-mascota">
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal className="modificar-mascota" show={showEditMascota} onHide={() => setShowEditMascota(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Actualizar Registro: {mascotaAEditar?.nombre}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form id="form-edit-mascota" onSubmit={handleUpdateMascota}>
+            
+            <div className="mb-3 p-2 bg-light rounded border border-info">
+              <small className="text-muted d-block">Ficha Técnica:</small>
+              <strong>{mascotaAEditar?.especie}</strong> | {mascotaAEditar?.raza} | {mascotaAEditar?.sexo}
+            </div>
+            
+            <Form.Group className="mb-3" controlId="peso">
+              <Form.Label>Peso Actual (Kg)</Form.Label>
+              <Form.Control type="number" name="peso" step="0.001" defaultValue={mascotaAEditar?.peso} required/>
+            </Form.Group>
+            
+            <Form.Group className="mb-3" controlId="edad">
+              <Form.Label>Edad (Años)</Form.Label>
+              <Form.Control type="number" name="edad" defaultValue={mascotaAEditar?.edad} required />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="estado">
+              <Form.Label>Estado del Paciente</Form.Label>
+              <Form.Select name="estado" defaultValue={mascotaAEditar?.estado}>
+                <option value="true">Habilitado</option>
+                <option value="false">Deshabilitado</option>
+              </Form.Select>
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>Nueva Observación Médica</Form.Label>
+              <Form.Control as="textarea" name="nuevaHistoria" rows={4} placeholder="Escriba la nota de la consulta actual..."/>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditMascota(false)}>Cerrar</Button>
+          <Button className="btn-modificar" type="submit" form="form-edit-mascota">
+            Actualizar Registro
+          </Button>
+        </Modal.Footer>
       </Modal>
 
     </main>

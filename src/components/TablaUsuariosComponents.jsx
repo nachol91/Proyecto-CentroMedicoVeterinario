@@ -1,12 +1,12 @@
 import { Table, Button } from 'react-bootstrap';
 import "../styles/TablaUsuarios.css";
 
-export default function TablaUsuariosComponents({ abrirEditor, usuarios, obtenerUsuarios, eliminarUsuario }) {
+export default function TablaUsuariosComponents({ abrirEditor, usuarios, eliminarUsuario, handleVerMascotas }) {
 
    return (
     <div>
         <section>
-            <Table striped bordered hover>
+            <Table responsive bordered hover>
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -28,10 +28,22 @@ export default function TablaUsuariosComponents({ abrirEditor, usuarios, obtener
                                 <td>{usuario.correo}</td>
                                 <td>{usuario.telefono}</td>
                                 <td>{usuario.estado === true ? (<p>Habilitado</p>) : (<p>Deshabilitado</p>)}</td>
-                                <td>{usuario.fechaRegistro}</td>
-                                <td>Mascotas</td>
                                 <td>
-                                    <Button variant="danger" onClick={() => { eliminarUsuario(usuario._id) }}>
+                                    {new Date(usuario.fechaRegistro).toLocaleString('es-AR', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </td>
+                                <td>
+                                    <Button className="btn-modificar" onClick={() => handleVerMascotas(usuario)}>
+                                        Ver Mascotas
+                                    </Button> 
+                                </td>
+                                <td>
+                                    <Button variant="danger" onClick={() =>  eliminarUsuario(usuario._id) }>
                                         Eliminar
                                     </Button>
                                     
