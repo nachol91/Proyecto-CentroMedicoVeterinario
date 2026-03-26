@@ -117,7 +117,6 @@
   display: flex;
   justify-content: center; 
   gap: 20px;               
-  /* flex-wrap: wrap;          */
   margin-top: 30px;
 }
 
@@ -162,13 +161,44 @@
 }
 
 .btn-violeta {
-  padding: 0.8rem 1.5rem !important;
-  font-size: 1.1rem !important;
-  background-color: #6f42c1 !important;
-  border: none !important;
-  border-radius: 10px !important;
+    background-color: #6f42c1 !important;
+    border-color: #6f42c1 !important;
+    color: white !important;
 }
 
 .btn-violeta:hover {
-  background-color: #5a32a3 !important;
+    background-color: #5a32a3 !important;
+    border-color: #5a32a3 !important;
+    color: white !important;
+}
+
+/* estilos del calendario */
+
+.fc .fc-timegrid-slot {
+    height: 5.5rem !important; 
+}
+
+.fc-timegrid-event-harness {
+    max-width: 220px !important;
+}
+
+.fc-timegrid-event {
+    max-width: 200px !important;
+    
+    min-height: 50px !important; 
+    margin-top: 2px !important;
+}
+
+.fc-event-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    padding: 8px !important;
+    white-space: normal !important;
+    font-size: 0.85rem !important;
+    line-height: 1.2;
+}
+
+.fc-scroller {
+    overflow-y: auto !important;
 }

@@ -16,6 +16,7 @@ import Modal from "react-bootstrap/Modal";
 import TablaUsuarios from "../components/TablaUsuariosComponents";
 import TablaMedicos from "../components/TablaMedicosComponents";
 import TablaMascotas from "../components/TablaMascotas";
+import CalendarioTurnos from "../components/CalendarioTurnos";
 import { postUsuario, actualizarUsuario, patchUsuario, getUsuarios, deleteUsuario } from "../helpers/apiUsuarios";
 import { mascotasGetIdDueno, mascotaPost, mascotaDelete, mascotaPut, patchMascota } from "../helpers/apiMascotas";
 import "../styles/AdminPage.css";
@@ -376,8 +377,8 @@ const handleUpdateMascota = async (e) => {
             <TablaMedicos usuarios={usuarios} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={edicionUsuarioClick}/>
             <Button className="btn-violeta" onClick={handleShow}>Crear Médico</Button>
           </div>
-        )}
-        {activeTab === "turnos" && <h1>Gestión de Turnos</h1>}
+        )}        
+        {activeTab === "turnos" && <CalendarioTurnos />}
         {activeTab === "recetas" && <h1>Gestión de Recetas</h1>}
       </section>
       
