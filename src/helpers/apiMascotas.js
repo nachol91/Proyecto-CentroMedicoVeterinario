@@ -1,6 +1,27 @@
 const url = "http://localhost:3000/api/mascotas"; 
 
 
+export const mascotasGet = async (desde = 0) => {
+    const limite = 20;
+    const token = localStorage.getItem("token");
+
+    try {
+    const resp = await fetch(url + "?limite" + limite + "&desde" + desde, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json; charset=UTF-8",
+        "x-token": token,
+      },
+    });
+
+    const data = await resp.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("no se pueden obtener los datos!");
+  }
+}
+
 export const mascotasGetIdDueno = async (idDueno) => {
     const token = localStorage.getItem("token");
 
