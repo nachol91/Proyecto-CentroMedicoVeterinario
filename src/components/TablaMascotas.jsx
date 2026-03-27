@@ -46,7 +46,7 @@ export default function TablaMascotas({ mascotas, handleEliminarMascota, abrirEd
                   {mascota.estado ? "Habilitado" : "Deshabilitado"}
                 </td>
                 <td>
-                  <Button className="btn-modificar" size="sm" onClick={() => handleVerHistoria(mascota.historiaClinica, mascota.nombre)}>
+                  <Button className="btn-ver" size="sm" onClick={() => handleVerHistoria(mascota.historiaClinica, mascota.nombre)}>
                     Ver
                   </Button>
                 </td>

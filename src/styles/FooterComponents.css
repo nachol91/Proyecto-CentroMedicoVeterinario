@@ -1,4 +1,43 @@
 .footer{
     margin-bottom: 0px;
-    margin-top: 100%;
+    margin-top: auto;
+    background-color: var(--header-bg);
+    border-top: 2px solid var(--header-border);
+    padding: 1rem;
+    text-align: center;
+    color: var(--secondary-color);
+    box-shadow: 0 -2px 4px var(--shadow);
+}
+
+/* Responsividad */
+@media (max-width: 767px) {
+  /* Celulares */
+  .footer {
+    padding: 0.3rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet */
+  .footer {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  /* Notebook */
+  .footer {
+    padding: 0.9rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  /* Desktop */
+  .footer {
+    padding: 1rem;
+    font-size: 1rem;
+  }
 }

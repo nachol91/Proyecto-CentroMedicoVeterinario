@@ -3,3 +3,21 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+:root {
+    --primary-color: #6f42c1;
+    --primary-hover: #5a32a3;
+    --secondary-color: #033340;
+    --light-bg: #e0d9ff;
+    --border-color: #d1c9f0;
+    --hr-color: #c4b9f5;
+    --header-bg: whitesmoke;
+    --header-border: #dee2e6;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px var(--shadow);
+}{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

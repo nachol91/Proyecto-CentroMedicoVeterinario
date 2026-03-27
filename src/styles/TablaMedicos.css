@@ -1,0 +1,280 @@
+/* Estilos para la tabla de médicos */
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  min-width: 0;
+}
+
+.table {
+  width: 100%;
+  min-width: 0;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  background-color: white;
+  table-layout: fixed;
+}
+
+.table thead th,
+.table tbody td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table th:last-child,
+.table td:last-child {
+  min-width: 120px;
+  max-width: 170px;
+}
+
+.modal .table th:last-child,
+.modal .table td:last-child {
+  min-width: 150px;
+  max-width: 220px;
+  width: 1fr;
+  text-align: center;
+}
+
+.modal .table thead th:last-child {
+  width: auto;
+  white-space: normal;
+}
+
+.table thead th {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  padding: 1rem 0.5rem;
+}
+
+.table tbody td:last-child {
+  min-width: 130px;
+  max-width: 200px;
+  padding: 0.3rem 0.25rem;
+}
+
+.table td .btn {
+  white-space: nowrap;
+  min-width: 80px;
+  max-width: 150px;
+  width: auto;
+}
+
+.table tbody td {
+  word-break: break-word;
+  white-space: normal;
+}
+
+.table tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(111, 66, 193, 0.05);
+}
+
+.table tbody td {
+  border: 1px solid var(--border-color);
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.75rem 0.5rem;
+}
+
+.table-responsive {
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+/* Botones en la tabla */
+.table .btn {
+  margin: 0.2rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  padding: 0.33rem 0.6rem;
+  min-width: 68px;
+}
+
+.table td .btn-modificar {
+  background-color: #4f2f90 !important;
+  border: 1px solid #3e2372 !important;
+  color: white !important;
+}
+
+.table td .btn-danger {
+  background-color: #dc3545 !important;
+  border: 1px solid #c82333 !important;
+  color: white !important;
+}
+
+.table td .btn {
+  min-width: 55px;
+  max-width: 80px;
+  padding: 0.3rem 0.6rem;
+}
+
+.table .btn-ver {
+  min-width: 90px;
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-modificar {
+  background-color: var(--primary-color) !important;
+  border: none !important;
+}
+
+.btn-modificar:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+/* Responsividad */
+@media (max-width: 767px) {
+  /* Celulares */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table {
+    min-width: 520px;
+    table-layout: auto;
+    width: 100%;
+  }
+
+  .table {
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.3rem 0.15rem;
+    font-size: 0.75rem;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .table .btn {
+    font-size: 0.55rem;
+    padding: 0.15rem 0.3rem;
+  }
+
+  .table td .btn {
+    flex: 1 0 calc(50% - 0.4rem);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.35rem;
+    min-width: 45px;
+    max-width: 70px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet */
+  .table {
+    width: 100%;
+    table-layout: auto;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.85rem;
+  }
+
+  .table .btn {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  /* Notebook */
+  .table {
+    width: 100%;
+    table-layout: auto;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.7rem 0.35rem;
+    font-size: 0.9rem;
+  }
+
+  .table .btn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.7rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  /* Desktop */
+  .table thead th,
+  .table tbody td {
+    padding: 1rem 0.5rem;
+  }
+
+  .table .btn {
+    font-size: 0.8rem;
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .table {
+    table-layout: auto;
+  }
+
+  .table thead th,
+  .table tbody td {
+    white-space: normal;
+    font-size: 0.8rem;
+  }
+
+  .table td .btn,
+  .table .btn-ver,
+  .table .btn-modificar,
+  .table .btn-danger {
+    min-width: 70px;
+    max-width: 120px;
+    padding: 0.25rem 0.45rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .table .btn-ver {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.45rem;
+    min-width: 105px;
+    max-width: 135px;
+  }
+
+  .table td:last-child {
+    min-width: 175px;
+    max-width: 220px;
+  }
+
+  .table td .d-flex {
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 0.35rem;
+  }
+}

@@ -28,7 +28,15 @@ export default function TablaMedicosComponents({ usuarios, eliminarUsuario, abri
                                 <td>{usuario.correo}</td>
                                 <td>{usuario.telefono}</td>
                                 <td>{usuario.estado === true ? (<p>Habilitado</p>) : (<p>Deshabilitado</p>)}</td>
-                                <td>{usuario.fechaRegistro}</td>
+                                <td>
+                                    {new Date(usuario.fechaRegistro).toLocaleString('es-AR', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </td>
                                 <td>
                                     <Button variant="danger" onClick={() => { eliminarUsuario(usuario._id) }}>
                                         Eliminar
