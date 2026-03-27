@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/api/auth/login";
+const url = "https://proyecto-centro-medico-veterinario.vercel.app/api/auth/login";
 
 export const authLogin = async (datos) =>{
     try {
@@ -6,7 +6,7 @@ export const authLogin = async (datos) =>{
             method: "POST",
             body: JSON.stringify(datos),
             headers: {
-                "content-type": "application/json; charset=UTF-8"
+                "Content-Type": "application/json"
             }
         });
 

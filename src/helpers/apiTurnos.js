@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/api/turnos";
+const url = "https://proyecto-centro-medico-veterinario.vercel.app/api/turnos";
 
 export const getTurnos = async (desde = 0) => {
   const limite = 50; 

@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/api/usuarios";
+const url = "https://proyecto-centro-medico-veterinario.vercel.app/api/usuarios";
 
 export const getUsuarios = async (desde = 0) => {
   const limite = 10;

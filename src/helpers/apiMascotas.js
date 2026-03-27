@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/api/mascotas"; 
+const url = "https://proyecto-centro-medico-veterinario.vercel.app/api/mascotas"; 
 
 
 export const mascotasGet = async (desde = 0) => {

@@ -38,7 +38,7 @@ export default function TablaUsuariosComponents({ abrirEditor, usuarios, elimina
                                     })}
                                 </td>
                                 <td>
-                                    <Button className="btn-modificar" onClick={() => handleVerMascotas(usuario)}>
+                                    <Button className="btn-ver" onClick={() => handleVerMascotas(usuario)}>
                                         Ver Mascotas
                                     </Button> 
                                 </td>
