@@ -4,7 +4,7 @@ import "../styles/TablaUsuarios.css";
 export default function TablaUsuariosComponents({ abrirEditor, usuarios, eliminarUsuario, handleVerMascotas }) {
 
    return (
-    <div>
+    <div className="tabla-usuarios">
         <section>
             <Table responsive bordered hover>
                 <thead>

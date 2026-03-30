@@ -5,7 +5,7 @@ export default function TablaMedicosComponents({ usuarios, eliminarUsuario, abri
 
 
     return (
-    <div>
+    <div className="tabla-medicos">
         <section>
             <Table responsive bordered hover>
                 <thead>
