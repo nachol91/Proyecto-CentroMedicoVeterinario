@@ -41,28 +41,6 @@
     width: auto;
     white-space: normal;
 }
-@media (max-width: 992px) {
-    .table {
-        table-layout: auto;
-    }
-
-    .table thead th,
-    .table tbody td {
-        white-space: normal;
-        font-size: 0.8rem;
-    }
-
-    .table td .btn,
-    .table .btn-ver,
-    .table .btn-modificar,
-    .table .btn-danger {
-        min-width: 70px;
-        max-width: 120px;
-        padding: 0.25rem 0.45rem;
-        font-size: 0.75rem;
-    }
-}
-
 
 .table thead th {
     background-color: var(--primary-color);
@@ -95,26 +73,6 @@
     text-overflow: ellipsis;
 }
 
-@media (min-width: 1024px) {
-    .table .btn-ver {
-        font-size: 0.85rem;
-        padding: 0.3rem 0.45rem;
-        min-width: 105px;
-        max-width: 135px;
-    }
-
-    .table td:last-child {
-        min-width: 175px;
-        max-width: 220px;
-    }
-
-    .table td:last-child {
-        flex-wrap: nowrap;
-        justify-content: flex-end;
-        gap: 0.35rem;
-    }
-}
-
 .table tbody td {
     word-break: break-word;
     white-space: normal;
@@ -141,7 +99,7 @@
 }
 
 /* Botones en la tabla */
-.table td:last-child {
+.tabla-usuarios .table td:last-child {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -149,7 +107,7 @@
   justify-content: center;
 }
 
-.table td:last-child .btn {
+.tabla-usuarios .table td:last-child .btn {
   min-width: 60px;
   max-width: 75px;
   padding: 3px 6px;
@@ -158,37 +116,13 @@
   transition: all 0.25s ease;
 }
 
-.table td:last-child {
+.tabla-usuarios .table td:last-child {
   padding: 0.25rem;
 }
 
-.table td:last-child .btn-modificar,
-.table td:last-child .btn-danger {
+.tabla-usuarios .table td:last-child .btn-modificar,
+.tabla-usuarios .table td:last-child .btn-danger {
   min-width: 90px;
-}
-
-@media (max-width: 767px) {
-  .table td:last-child {
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 0.3rem;
-    flex-wrap: wrap;
-  }
-
-  .table td:last-child .btn {
-    width: calc(50% - 0.35rem);
-    min-width: auto;
-    font-size: 0.72rem;
-    padding: 3px 4px;
-  }
-}
-
-@media (max-width: 767px) {
-  .table td:last-child .btn {
-    max-width: 80px;
-    padding: 2px 5px;
-    font-size: 0.72rem;
-  }
 }
 
 .btn-ver {
@@ -249,7 +183,45 @@
     font-size: 0.55rem;
     padding: 0.15rem 0.3rem;
   }
+  .tabla-usuarios .table td:last-child {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .tabla-usuarios .table td:last-child .btn {
+    width: calc(50% - 0.35rem);
+    min-width: auto;
+    font-size: 0.72rem;
+    padding: 3px 4px;
+  }
 }
+
+
+
+@media (max-width: 992px) {
+    .table {
+        table-layout: auto;
+    }
+
+    .table thead th,
+    .table tbody td {
+        white-space: normal;
+        font-size: 0.8rem;
+    }
+
+    .table td .btn,
+    .table .btn-ver,
+    .table .btn-modificar,
+    .table .btn-danger {
+        min-width: 70px;
+        max-width: 120px;
+        padding: 0.25rem 0.45rem;
+        font-size: 0.75rem;
+    }
+}
+
 
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Tablet */
@@ -287,6 +259,26 @@
     font-size: 0.75rem;
     padding: 0.35rem 0.7rem;
   }
+}
+
+@media (min-width: 1024px) {
+    .table .btn-ver {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.45rem;
+        min-width: 105px;
+        max-width: 135px;
+    }
+
+    .tabla-usuarios .table td:last-child {
+        min-width: 175px;
+        max-width: 220px;
+    }
+
+    .tabla-usuarios .table td:last-child {
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 0.35rem;
+    }
 }
 
 @media (min-width: 1440px) {
