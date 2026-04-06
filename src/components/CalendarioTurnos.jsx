@@ -30,17 +30,13 @@ export default function CalendarioTurnos() {
     dueno: "",
     mascota: "",
     medico: ""
-    });
+  });
   const [opcionesMascotas, setOpcionesMascotas] = useState([]);
   const [editando, setEditando] = useState(false);
   const [datosEditados, setDatosEditados] = useState({});
+  
 
-  useEffect(() => {
-    cargarTurnos();
-    cargarSelects();
-  }, []);
-
-const cargarSelects = async () => {
+  const cargarSelects = async () => {
   try {
     const resMascotas = await mascotasGet(); 
     const resUsuarios = await getUsuarios();
@@ -94,7 +90,6 @@ const cargarSelects = async () => {
       console.error("Error al cargar los turnos:", error);
     }
   };
-
   
   const handleEventClick = (info) => {
     setTurnoSeleccionado(info.event.extendedProps);
@@ -113,7 +108,7 @@ const cargarSelects = async () => {
   
     if (fechaSeleccionada < ahora) {
       alert("No se pueden agendar turnos en fechas o horarios pasados.");
-      selectInfo.view.calendar.unselect(); // Limpia la selección azul
+      selectInfo.view.calendar.unselect();
       return;
     }    
     
@@ -131,7 +126,7 @@ const cargarSelects = async () => {
     selectInfo.view.calendar.unselect();
   };
 
- const handleCrearTurno = async (e) => {
+  const handleCrearTurno = async (e) => {
   e.preventDefault();
   
   try {
@@ -154,102 +149,107 @@ const cargarSelects = async () => {
   } catch (error) {
     alert("Error al guardar: " + error.message);
   }
-};
-
-const handleFinalizarAtencion = async () => {
-  if (!turnoSeleccionado) return;
-
-  try {
-    await actualizarTurno(turnoSeleccionado._id, { estado: "REALIZADO" });
-
-    alert("¡Consulta Finalizada!");
-    handleClose();
-    await cargarTurnos(); 
-    
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
-};
-
-const handleGuardarCambios = async () => {
-  const medicoId = datosEditados.medico?._id || datosEditados.medico;
-
-  const cuerpoParaEnviar = {
-    fecha: datosEditados.fecha,
-    descripcion: datosEditados.descripcion,
-    tipoDeEstudio: datosEditados.tipoDeEstudio,
-    medico: medicoId // Mandamos solo el ID
   };
 
-  try {
-    const respuesta = await modificarTurno(turnoSeleccionado._id, cuerpoParaEnviar);
-    
-    alert("¡Turno modificado con éxito!");
-    setEditando(false);
-    handleClose();
-    await cargarTurnos();
-  } catch (error) {
-    alert("Error al modificar: " + error.message);
-  }
-};
+  const handleFinalizarAtencion = async () => {
+    if (!turnoSeleccionado) return;
 
-const handleEventDrop = async (info) => {
-  const { event } = info;
-  
-  const idTurno = event.extendedProps._id;
-  const nuevaFecha = info.event.start;
-  const ahora = new Date();
-
-  if (nuevaFecha < ahora) {
-    alert("No puedes reprogramar un turno a una fecha/hora pasada.");
-    info.revert();
-    return;
-  }
-
-  const cuerpoEdicion = {
-    turno: idTurno,
-    fecha: nuevaFecha,
-    descripcion: event.extendedProps.descripcion,
-    tipoDeEstudio: event.extendedProps.tipoDeEstudio,
-    medico: event.extendedProps.medico?._id || event.extendedProps.medico
-  };
-
-  try {
-    await modificarTurno(idTurno, cuerpoEdicion);
-    alert("Turno reprogramado con éxito");
-    await cargarTurnos(); 
-  } catch (error) {
-    alert("Error al reprogramar: " + error.message);
-    info.revert(); 
-  }
-};
-
-const handleBorrarTurno = async () => {
-  if (!turnoSeleccionado) return;
-
-  const idABorrar = turnoSeleccionado?._id || turnoSeleccionado?.id;
-
-  if (!idABorrar) {
-    alert("Error: No se pudo encontrar el identificador del turno.");
-    return;
-  }
-
-  const confirmar = window.confirm(`¿Estás seguro de que deseas eliminar el turno de ${turnoSeleccionado.mascota?.nombre}?`);
-
-  if (confirmar) {
     try {
-      const respuesta = await deleteTurno(idABorrar);
+      await actualizarTurno(turnoSeleccionado._id, { estado: "REALIZADO" });
 
-      alert("Turno eliminado correctamente");
+      alert("¡Consulta Finalizada!");
       handleClose();
       await cargarTurnos(); 
-
+      
     } catch (error) {
-      alert("Error al intentar eliminar el turno");
-      console.error(error);
+      alert("Error: " + error.message);
     }
-  }
-};
+  };
+
+  const handleGuardarCambios = async () => {
+    const medicoId = datosEditados.medico?._id || datosEditados.medico;
+
+    const cuerpoParaEnviar = {
+      fecha: datosEditados.fecha,
+      descripcion: datosEditados.descripcion,
+      tipoDeEstudio: datosEditados.tipoDeEstudio,
+      medico: medicoId // Mandamos solo el ID
+    };
+
+    try {
+      const respuesta = await modificarTurno(turnoSeleccionado._id, cuerpoParaEnviar);
+      
+      alert("¡Turno modificado con éxito!");
+      setEditando(false);
+      handleClose();
+      await cargarTurnos();
+    } catch (error) {
+      alert("Error al modificar: " + error.message);
+    }
+  };
+
+  const handleEventDrop = async (info) => {
+    const { event } = info;
+    
+    const idTurno = event.extendedProps._id;
+    const nuevaFecha = info.event.start;
+    const ahora = new Date();
+
+    if (nuevaFecha < ahora) {
+      alert("No puedes reprogramar un turno a una fecha/hora pasada.");
+      info.revert();
+      return;
+    }
+
+    const cuerpoEdicion = {
+      turno: idTurno,
+      fecha: nuevaFecha,
+      descripcion: event.extendedProps.descripcion,
+      tipoDeEstudio: event.extendedProps.tipoDeEstudio,
+      medico: event.extendedProps.medico?._id || event.extendedProps.medico
+    };
+
+    try {
+      await modificarTurno(idTurno, cuerpoEdicion);
+      alert("Turno reprogramado con éxito");
+      await cargarTurnos(); 
+    } catch (error) {
+      alert("Error al reprogramar: " + error.message);
+      info.revert(); 
+    }
+  };
+
+  const handleBorrarTurno = async () => {
+    if (!turnoSeleccionado) return;
+
+    const idABorrar = turnoSeleccionado?._id || turnoSeleccionado?.id;
+
+    if (!idABorrar) {
+      alert("Error: No se pudo encontrar el identificador del turno.");
+      return;
+    }
+
+    const confirmar = window.confirm(`¿Estás seguro de que deseas eliminar el turno de ${turnoSeleccionado.mascota?.nombre}?`);
+
+    if (confirmar) {
+      try {
+        const respuesta = await deleteTurno(idABorrar);
+
+        alert("Turno eliminado correctamente");
+        handleClose();
+        await cargarTurnos(); 
+
+      } catch (error) {
+        alert("Error al intentar eliminar el turno");
+        console.error(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    cargarTurnos();
+    cargarSelects();
+  }, []);
 
   return (
     <div className="bg-white p-4 rounded shadow">
@@ -427,7 +427,7 @@ const handleBorrarTurno = async () => {
         </Modal.Header>
         <form onSubmit={handleCrearTurno}>
           <Modal.Body>
-            {/* Campo de Fecha (Solo Lectura) */}
+            {/* Campo de Fecha */}
             <div className="mb-3">
               <label className="form-label fw-bold">Fecha y Hora</label>
               <input 
@@ -437,7 +437,7 @@ const handleBorrarTurno = async () => {
                 readOnly/>
             </div>
 
-            {/* Tipo de Estudio (Tu Enum) */}
+            {/* Tipo de Estudio */}
             <div className="mb-3">
               <label className="form-label fw-bold">Tipo de Estudio</label>
               <select className="form-select" value={nuevoTurno.tipoDeEstudio} onChange={(e) => setNuevoTurno({...nuevoTurno, tipoDeEstudio: e.target.value})}required>
@@ -452,7 +452,7 @@ const handleBorrarTurno = async () => {
             {/* Selección de Mascota */}
             <div className="mb-3">
               <label className="form-label fw-bold">Mascota (Paciente)</label>
-                <Select options={opcionesMascotas} placeholder="Buscar mascota, dueño o email..." noOptionsMessage={() => "No se encontraron resultados"}
+                <Select options={opcionesMascotas} required placeholder="Buscar mascota, dueño o email..." noOptionsMessage={() => "No se encontraron resultados"}
                   isClearable
                   onChange={(selected) => {
                     if (selected) {
@@ -497,7 +497,7 @@ const handleBorrarTurno = async () => {
             <Button variant="secondary" onClick={() => setShowModalCrear(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="btn-violeta" onClick={() => console.log("Click detectado en el botón")}>
+            <Button type="submit" className="btn-violeta">
               Confirmar Cita
             </Button>
           </Modal.Footer>
