@@ -1,0 +1,460 @@
+.admin-page {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* Aside */
+.aside-main {
+  width: 300px;
+  margin-top: 80px;
+  background-color: var(--light-bg);
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  z-index: 100;
+}
+
+.aside-nav {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2.5rem;
+}
+
+/* Botones del Menú */
+.aside-item {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 1.2rem 2rem;
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-left: 6px solid transparent;
+  text-align: left;
+  border-radius: 0 8px 8px 0;
+}
+
+.aside-item:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+  transform: translateX(5px);
+}
+
+.aside-item.active {
+  color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.6);
+  border-left: 6px solid var(--primary-color);
+  font-weight: 600;
+  box-shadow: inset 0 0 10px rgba(111, 66, 193, 0.1);
+}
+
+.aside-custom-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 1.2rem;
+  object-fit: contain;
+  transition: filter 0.3s ease;
+}
+
+.aside-item.active .aside-custom-icon {
+  filter: drop-shadow(0px 0px 1px rgba(111, 66, 193, 0.3));
+}
+
+/* Footer del Aside (Sección WhatsApp) */
+.aside-footer {
+  text-align: center;
+  padding: 0 1.5rem;
+}
+
+.aside-footer hr {
+  border: 0;
+  border-top: 1px solid var(--hr-color);
+  margin-bottom: 1.2rem;
+  opacity: 1;
+}
+
+.aside-footer p {
+  font-size: 0.85rem;
+  color: #5d5d5d;
+  margin-bottom: 0.8rem;
+  padding: 0 10px;
+}
+
+.whatsapp-custom-icon {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Contenido Principal (Derecha) */
+.content-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.content-main h1,
+h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #4a4a4a;
+}
+
+/* tarjetas del inicio */
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.custom-card {
+  width: 100%;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease;
+  background-color: #f3f0ff !important;
+  text-align: center;
+  justify-content: space-between;
+  border-radius: 18px !important;
+  overflow: hidden;
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-img-custom {
+  height: 220px;
+  width: 100%;
+  object-fit: cover;
+  padding: 0;
+}
+
+/* estilos del calendario */
+
+.fc .fc-timegrid-slot {
+  height: 5.5rem !important;
+}
+
+.fc-timegrid-event-harness {
+  max-width: 220px !important;
+}
+
+.fc-timegrid-event {
+  max-width: 200px !important;
+
+  min-height: 50px !important;
+  margin-top: 2px !important;
+}
+
+.fc-event-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px !important;
+  white-space: normal !important;
+  font-size: 0.85rem !important;
+  line-height: 1.2;
+}
+
+.fc-scroller {
+  overflow-y: auto !important;
+}
+
+
+.fc-event {
+    background-color: var(--primary-color, #6f42c1) !important;
+    border-color: var(--primary-color, #6f42c1) !important;
+    color: white !important; /* Texto en blanco para que resalte */
+}
+
+
+.fc .fc-button-primary {
+    background-color: var(--primary-color, #6f42c1) !important;
+    border-color: var(--primary-color, #6f42c1) !important;
+}
+
+.fc .fc-button-primary:hover {
+    background-color: var(--primary-hover, #5a32a3) !important;
+    border-color: var(--primary-hover, #5a32a3) !important;
+}
+
+
+.fc .fc-button-primary:not(:disabled).fc-button-active, 
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: #4e2a8c !important; 
+    border-color: #4e2a8c !important;
+}
+
+
+.fc .fc-daygrid-day-number, .fc .fc-col-header-cell-cushion {
+    color: var(--secondary-color) !important;
+    text-decoration: none !important;
+}
+
+
+.fc .fc-timegrid-now-indicator-line {
+    border-color: var(--primary-color) !important;
+}
+
+.fc .fc-timegrid-now-indicator-arrow {
+    border-top-color: var(--primary-color) !important;
+    border-bottom-color: var(--primary-color) !important;
+}
+
+.fc .fc-day-today {
+    background-color: var(--light-bg) !important;
+}
+
+/* Forzar bordes más oscuros y definidos */
+.fc td, 
+.fc th, 
+.fc .fc-scrollgrid, 
+.fc .fc-timegrid-slot, 
+.fc .fc-timegrid-col {
+    border-color: #b0b0b0 !important; /* Un gris más fuerte que antes */
+    border-style: solid !important;
+}
+
+/* Hacer que las líneas horizontales de las horas sean más visibles */
+.fc .fc-timegrid-slot-lane {
+    border-bottom: 1px solid #b0b0b0 !important;
+}
+
+/* Resaltar las líneas divisorias principales */
+.fc .fc-scrollgrid-section-header th {
+    border-bottom: 2px solid #9c27b0 !important; /* Una línea violeta más fuerte arriba */
+}
+
+/* Si quieres que al pasar el mouse se note dónde estás parado */
+.fc .fc-timegrid-slot:hover {
+    background-color: rgba(111, 66, 193, 0.15) !important;
+}
+
+
+
+@media (max-width: 600px) {
+  .fc .fc-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.7rem !important;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .fc .fc-button {
+    font-size: 0.72rem !important;
+    padding: 0.22rem 0.42rem !important;
+  }
+
+  .fc .fc-button-group {
+    gap: 0.2rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .fc .fc-toolbar {
+    gap: 0.3rem;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.35rem !important;
+    line-height: 1.15;
+  }
+
+  .fc .fc-button {
+    font-size: 0.66rem !important;
+    padding: 0.18rem 0.34rem !important;
+  }
+}
+
+.custom-card .card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.custom-card .card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.btn-violeta {
+  background-color: #6f42c1 !important;
+  border-color: #6f42c1 !important;
+  color: white !important;
+}
+
+.btn-violeta:hover {
+  background-color: #5a32a3 !important;
+  border-color: #5a32a3 !important;
+  color: white !important;
+}
+
+/* Responsividad */
+@media (max-width: 767px) {
+  /* Celulares */
+  .admin-page {
+    flex-direction: column;
+    padding: 5px;
+    gap: 5px;
+  }
+
+  .aside-main {
+    width: 100%;
+    margin-top: 0;
+    position: static;
+    order: -1;
+  }
+
+  .aside-nav {
+    padding-top: 1rem;
+  }
+
+  .aside-item {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .aside-custom-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 0.6rem;
+  }
+
+  .whatsapp-custom-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .card-img-custom {
+    height: 170px;
+  }
+  .custom-card {
+    min-height: 320px;
+  }
+  .custom-card .card-body {
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet */
+  .admin-page {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .aside-main {
+    width: 280px;
+  }
+
+  .aside-item {
+    padding: 1rem 1.8rem;
+    font-size: 1rem;
+  }
+
+  .aside-custom-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .whatsapp-custom-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .custom-card {
+    min-height: 340px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  /* Notebook */
+  .admin-page {
+    padding: 18px;
+    gap: 18px;
+  }
+
+  .aside-main {
+    width: 290px;
+  }
+
+  .aside-item {
+    padding: 1.1rem 2rem;
+    font-size: 1.05rem;
+  }
+
+  .aside-custom-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .whatsapp-custom-icon {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (min-width: 1440px) {
+  /* Desktop */
+  .admin-page {
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .aside-main {
+    width: 300px;
+  }
+
+  .aside-item {
+    padding: 1.2rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .aside-custom-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .whatsapp-custom-icon {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.whatsapp-custom-icon:hover {
+  transform: scale(1.15) rotate(5deg);
+}
+
+@media (min-width: 1024px) {
+  .custom-card {
+    min-height: 360px;
+  }
+}

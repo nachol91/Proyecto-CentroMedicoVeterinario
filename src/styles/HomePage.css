@@ -1,0 +1,58 @@
+.logo-login img {
+  width: 200px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.main-login {
+  color: var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--light-bg);
+}
+
+Form {
+  color: var(--secondary-color);
+  width: 300px;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+/* Responsividad */
+@media (max-width: 767px) {
+  /* Celulares */
+  Form {
+    width: 95%;
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet */
+  Form {
+    width: 400px;
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  /* Notebook */
+  Form {
+    width: 350px;
+  }
+}
+
+@media (min-width: 1440px) {
+  /* Desktop */
+  Form {
+    width: 400px;
+  }
+}
