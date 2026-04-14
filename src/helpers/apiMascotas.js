@@ -6,7 +6,7 @@ export const mascotasGet = async (desde = 0) => {
     const token = localStorage.getItem("token");
 
     try {
-    const resp = await fetch(url + "?limite" + limite + "&desde" + desde, {
+    const resp = await fetch(url + "/" + "mascotas" + "/" + "?limite" + limite + "&desde" + desde, {
       method: "GET",
       headers: {
         "content-type": "application/json; charset=UTF-8",
@@ -26,7 +26,7 @@ export const mascotasGetIdDueno = async (idDueno) => {
     const token = localStorage.getItem("token");
 
     try {
-        const resp = await fetch(url + "/" + idDueno, {
+        const resp = await fetch(url + "/" + "mascotas" + "/" + idDueno, {
             method: 'GET',
             headers: {
                 'Content-type': "application/json; charset=UTF-8",
@@ -46,7 +46,7 @@ export const mascotaPost = async (datos) => {
     const token = localStorage.getItem("token");
 
     try {
-        const resp = await fetch(url, {
+        const resp = await fetch(url + "/" + "mascotas", {
             method: 'POST',
             body: JSON.stringify(datos),
             headers: {
@@ -67,7 +67,7 @@ export const mascotaPut = async (id, datos) => {
     const token = localStorage.getItem("token");
 
     try {
-        const resp = await fetch(url + "/" + id, {
+        const resp = await fetch(url + "/" + "mascotas" + "/" + id, {
             method: 'PUT',
             body: JSON.stringify(datos),
             headers: {
@@ -88,7 +88,7 @@ export const mascotaDelete = async (id) => {
     const token = localStorage.getItem("token");
 
     try {
-        const resp = await fetch(url + "/" + id, {
+        const resp = await fetch(url + "/" + "mascotas" + "/" + id, {
             method: 'DELETE',
             headers: {
                 'Content-type': "application/json; charset=UTF-8",
@@ -108,7 +108,7 @@ export const patchMascota = async (id) => {
     const token = localStorage.getItem("token");
 
     try {
-        const resp = await fetch(url + "/" + id, {
+        const resp = await fetch(url + "/" + "mascotas" + "/" + id, {
             method: 'PATCH',
             headers: {
                 'Content-type': "application/json; charset=UTF-8",
