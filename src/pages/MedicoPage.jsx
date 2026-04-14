@@ -7,9 +7,7 @@ import pacientes from "../assets/icons/nosotros.png";
 import turnos from "../assets/icons/calendario.png";
 import recetas from "../assets/icons/servicios.png";
 import wp from "../assets/icons/whatsapp.png";
-import medicos from "../assets/icons/medicos.png";
 import recetaCard from "../assets/img/recetas.avif";
-import medicosCard from "../assets/img/medicos.jpg";
 import turnosCard from "../assets/img/turnos.jpg";
 import pacientesCard from "../assets/img/pacientesCard.jpeg";
 
@@ -394,12 +392,7 @@ const handleUpdateMascota = async (e) => {
           <div>
             <h1>Gestión de Usuarios-Mascotas</h1>
             <div className="d-flex mb-3 gap-2">
-              <Form.Control
-                type="text"
-                placeholder="🔍 Buscar por nombre, mail o teléfono..."
-                className="w-50"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}/>
+              <Form.Control type="text" placeholder="🔍 Buscar por nombre, mail o teléfono..." className="w-25" value={busqueda} onChange={(e) => setBusqueda(e.target.value)}/>
                 {busqueda && (
                   <Button className="btn-violeta" onClick={() => setBusqueda("")}>
                     Limpiar
@@ -409,8 +402,7 @@ const handleUpdateMascota = async (e) => {
             <TablaUsuarios usuarios={usuariosFiltrados} cargando={cargandoId} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={edicionUsuarioClick} handleVerMascotas={handleVerMascotas}/>
             <Button className="btn-violeta" onClick={handleShow}>Crear Usuario</Button>
           </div>
-        )}
-               
+        )}               
         {activeTab === "turnos" && <CalendarioTurnos />}
         {activeTab === "recetas" && <h1>Gestión de Recetas</h1>}
       </section>
