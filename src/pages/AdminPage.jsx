@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { Button, Card, Form, Modal, Spinner, Row, Col } from "react-bootstrap";
+
+//iconos y assets
 import inicio from "../assets/icons/cucha.png";
 import pacientes from "../assets/icons/nosotros.png";
 import turnos from "../assets/icons/calendario.png";
@@ -9,25 +12,25 @@ import recetaCard from "../assets/img/recetas.avif";
 import medicosCard from "../assets/img/medicos.jpg";
 import turnosCard from "../assets/img/turnos.jpg";
 import pacientesCard from "../assets/img/pacientesCard.jpeg";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
+
+// Componentes y Helpers
 import TablaUsuarios from "../components/TablaUsuariosComponents";
 import TablaMedicos from "../components/TablaMedicosComponents";
 import TablaMascotas from "../components/TablaMascotas";
 import CalendarioTurnos from "../components/CalendarioTurnos";
 import { postUsuario, actualizarUsuario, patchUsuario, getUsuarios, deleteUsuario } from "../helpers/apiUsuarios";
 import { mascotasGetIdDueno, mascotaPost, mascotaDelete, mascotaPut, patchMascota } from "../helpers/apiMascotas";
+
 import "../styles/AdminPage.css";
 
 
 export default function AdminPage() {
 
   // hooks y funciones de usuarios//
-  const [activeTab, setActiveTab] = useState("inicio");
 
-  const [usuarios, setUsuarios] = useState([]); 
+  const [activeTab, setActiveTab] = useState("inicio");
+  const [usuarios, setUsuarios] = useState([]);  
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);  
@@ -37,16 +40,39 @@ export default function AdminPage() {
   const handleCloseEdit = () => {
     setShowEdit(false);
     setUsuarioAEditar();
-  };  
+  };
+  
+  //hooks para el buscador y el loading
+
+  const [busqueda, setBusqueda] = useState("");
+  const [usuariosFiltrados, setUsuariosFiltrados] = useState([]);
+  const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
     obtenerUsuarios();
   }, []);
+
+  useEffect(() => {
+    const filtrado = usuarios.filter((usuario) => {
+      const nombre = usuario.nombre.toLowerCase();
+      const apellido = usuario.apellido.toLowerCase();
+      const correo = usuario.correo.toLowerCase();
+
+      const userBusqueda = busqueda.toLowerCase();
+
+      return(
+        nombre.includes(userBusqueda) ||
+        apellido.includes(userBusqueda) ||
+        correo.includes(userBusqueda) ||
+        usuario.telefono?.includes(busqueda)
+      );
+    });
+    setUsuariosFiltrados(filtrado);
+  },[busqueda, usuarios]);
   
   const obtenerUsuarios = async () => {
     const data = await getUsuarios();
-    const usuariosObtenidos = data.usuarios;
-    setUsuarios(usuariosObtenidos);
+    setUsuarios(data.usuarios || []);
   }; 
 
   const eliminarUsuario = async (id) => {
@@ -68,6 +94,7 @@ export default function AdminPage() {
   const handleSave = async(e) =>{
     
     e.preventDefault();
+    setCargando(true);
     
     const nombre= e.target.nombre.value;
     const apellido= e.target.apellido.value;
@@ -79,6 +106,7 @@ export default function AdminPage() {
     
     if (password.length > 0) {
         if (password !== confirmarPassword) {
+          setCargando(false);
           return alert("Las contraseñas no coinciden");
         }
         if (password.length < 8) {
@@ -101,6 +129,8 @@ export default function AdminPage() {
     }catch (error) {
       console.error(error);
       alert(error.message || "error al conectar al servidor")
+    } finally{
+      setCargando(false);
     }
   };
 
@@ -111,6 +141,7 @@ export default function AdminPage() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setCargando(true);
     
     try {
       const id = usuarioAEditar._id;
@@ -145,6 +176,8 @@ export default function AdminPage() {
     } catch (error) {
       console.error(error)
       alert("Error al actualizar: " + error.message);
+    } finally{
+      setCargando(false);
     }
   };
 
@@ -153,6 +186,7 @@ export default function AdminPage() {
   const [mascotas, setMascotas] = useState([]);
   const [showModalMascotas, setShowModalMascotas] = useState(false);
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState();
+  const [cargandoId, setCargandoId] = useState(null);
 
   const [historiaSeleccionada, setHistoriaSeleccionada] = useState("");
   const [showModalHistoria, setShowModalHistoria] = useState(false);
@@ -205,12 +239,20 @@ export default function AdminPage() {
   };
 
   const handleVerMascotas = async(usuario) =>{
+    setCargandoId(usuario._id);
     setUsuarioSeleccionado(usuario);
-    
-    const data = await mascotasGetIdDueno(usuario._id);
 
-    setMascotas(data.mascotas || []);
-    setShowModalMascotas(true);
+    try{
+      const data = await mascotasGetIdDueno(usuario._id);
+
+      setMascotas(data.mascotas || []);
+      setShowModalMascotas(true);
+    }catch(error){
+      console.error("Error al traer las mascotas:", error);
+      alert("No se pudieron traer las mascotas del usuario");
+    }finally{
+      setCargandoId(null);
+    }    
   };
 
   const handleVerHistoria = (texto, nombre) => {
@@ -234,40 +276,40 @@ export default function AdminPage() {
   }
 };
 
-const edicionMascotaClick = (mascota) => {
-  setMascotaAEditar(mascota);
-  setShowEditMascota(true);
-};
+  const edicionMascotaClick = (mascota) => {
+    setMascotaAEditar(mascota);
+    setShowEditMascota(true);
+  };
 
-const handleUpdateMascota = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const id = mascotaAEditar._id;
-      const nuevoEstado = e.target.estado.value === "true";
-      if(nuevoEstado !== mascotaAEditar.estado){
-        await patchMascota(id, {estado: nuevoEstado});
-      }
-
-      const dataUpdate = {
-        peso: Number(e.target.peso.value),
-        edad: Number(e.target.edad.value), 
-        NuevaHistoriaClinica: e.target.nuevaHistoria.value
-      };
-    
-        const resultado = await mascotaPut(mascotaAEditar._id, dataUpdate);
-        
-        if (resultado) {
-            alert("¡Registro actualizado con éxito!");
-            setShowEditMascota(false);
-            e.target.reset(); 
-            handleVerMascotas(usuarioSeleccionado);
+  const handleUpdateMascota = async (e) => {
+      e.preventDefault();
+      
+      try {
+        const id = mascotaAEditar._id;
+        const nuevoEstado = e.target.estado.value === "true";
+        if(nuevoEstado !== mascotaAEditar.estado){
+          await patchMascota(id, {estado: nuevoEstado});
         }
-    } catch (error) {
-        console.error(error);
-        alert("Error al actualizar los datos");
-    }
-};
+
+        const dataUpdate = {
+          peso: Number(e.target.peso.value),
+          edad: Number(e.target.edad.value), 
+          NuevaHistoriaClinica: e.target.nuevaHistoria.value
+        };
+      
+          const resultado = await mascotaPut(mascotaAEditar._id, dataUpdate);
+          
+          if (resultado) {
+              alert("¡Registro actualizado con éxito!");
+              setShowEditMascota(false);
+              e.target.reset(); 
+              handleVerMascotas(usuarioSeleccionado);
+          }
+      } catch (error) {
+          console.error(error);
+          alert("Error al actualizar los datos");
+      }
+  };
 
 
   return (
@@ -367,14 +409,30 @@ const handleUpdateMascota = async (e) => {
         {activeTab === "pacientes" && (
           <div>
             <h1>Gestión de Usuarios-Mascotas</h1>
-            <TablaUsuarios usuarios={usuarios} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={edicionUsuarioClick} handleVerMascotas={handleVerMascotas}/>
+            <div className="d-flex mb-3 gap-2">
+              <Form.Control type="text" placeholder="🔍 Buscar por nombre, mail o teléfono..." className="w-25" value={busqueda} onChange={(e) => setBusqueda(e.target.value)}/>
+                {busqueda && (
+                  <Button className="btn-violeta" onClick={() => setBusqueda("")}>
+                    Limpiar
+                  </Button>
+                )}
+            </div>
+            <TablaUsuarios usuarios={usuariosFiltrados} cargando={cargandoId} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={edicionUsuarioClick} handleVerMascotas={handleVerMascotas}/>
             <Button className="btn-violeta" onClick={handleShow}>Crear Usuario</Button>
           </div>
         )}
         {activeTab === "medicos" && (
           <div>
             <h1>Gestión de Médicos</h1>
-            <TablaMedicos usuarios={usuarios} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={edicionUsuarioClick}/>
+            <div className="d-flex mb-3 gap-2">
+              <Form.Control type="text" placeholder="🔍 Buscar médico..." className="w-25" value={busqueda} onChange={(e) => setBusqueda(e.target.value)}/>
+                {busqueda && (
+                  <Button className="btn-violeta" onClick={() => setBusqueda("")}>
+                    Limpiar
+                  </Button>
+                )}
+            </div>
+            <TablaMedicos usuarios={usuariosFiltrados} obtenerUsuarios={obtenerUsuarios} eliminarUsuario={eliminarUsuario} abrirEditor={edicionUsuarioClick}/>
             <Button className="btn-violeta" onClick={handleShow}>Crear Médico</Button>
           </div>
         )}        
@@ -387,48 +445,71 @@ const handleUpdateMascota = async (e) => {
       <Modal className="crear-usuario" show={show} onHide={handleClose}>
         
         <Modal.Header closeButton>
-          <Modal.Title>Nuevo Usuario</Modal.Title>
+          <Modal.Title>{activeTab === "medicos" ? "Registrar Nuevo Médico" : "Registrar Nuevo Usuario"}</Modal.Title>
         </Modal.Header>
         
         <Modal.Body>
           <Form id="form-nuevo-usuario" onSubmit={handleSave} >
-            <Form.Group className="mb-3" controlId="nombre">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control type="text" name='nombre' placeholder="ingresa el nombre" autoFocus/>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="apellido">
-              <Form.Label>apellido</Form.Label>
-              <Form.Control type="text" name='apellido' placeholder="ingresa el apellido"/>
-            </Form.Group>            
-            <Form.Group className="mb-3" controlId="correo">
-              <Form.Label>correo</Form.Label>
-              <Form.Control type="email" name='correo' placeholder="ingresa el correo" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="telefono">
-              <Form.Label>Telefono</Form.Label>
-              <Form.Control type="tel" name='telefono'rows={3} placeholder="ingresa el telefono"/>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="rol">
-              <Form.Label>Rol</Form.Label>
-              <Form.Control type="text" name='rol' placeholder="ingresa el rol"/>
-            </Form.Group>            
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Contraseña</Form.Label>
-              <Form.Control type="password" name='password' placeholder='ingresar contraseña'rows={3} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="confirmarPassword">
-              <Form.Label>Confirmar contraseña</Form.Label>
-              <Form.Control type="password" name='confirmarPassword' placeholder='Confirma contraseña ingresada' rows={3}/>
-            </Form.Group>            
+            <Row className="g-2">
+              
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3" controlId="nombre">
+                  <Form.Label>Nombre</Form.Label>
+                  <Form.Control type="text" name='nombre' placeholder="ingresa el nombre" autoFocus required/>
+                </Form.Group>
+              </Col>
+
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3" controlId="apellido">
+                  <Form.Label>Apellido</Form.Label>
+                  <Form.Control type="text" name='apellido' placeholder="ingresa el apellido" required/>
+                </Form.Group>
+              </Col>   
+
+              <Col xs={12}>    
+                <Form.Group className="mb-3 full-width" controlId="correo">
+                  <Form.Label>Correo</Form.Label>
+                  <Form.Control type="email" name='correo' placeholder="ingresa el correo" required/>
+                </Form.Group>
+              </Col> 
+
+              <Col xs={12}>
+                <Form.Group className="mb-3 full-width" controlId="telefono">
+                  <Form.Label>Telefono</Form.Label>
+                  <Form.Control type="tel" name='telefono'rows={3} placeholder="ingresa el telefono" required/>
+                </Form.Group>
+              </Col>  
+              
+              <Col xs={12}>            
+                <Form.Group className="mb-3 full-width" controlId="password">
+                  <Form.Label>Contraseña</Form.Label>
+                  <Form.Control type="password" name='password' placeholder='ingresar contraseña'rows={3} required/>
+                </Form.Group>
+              </Col>
+
+              <Col xs={12}>
+                <Form.Group className="mb-3 full-width" controlId="confirmarPassword">
+                  <Form.Label>Confirmar contraseña</Form.Label>
+                  <Form.Control type="password" name='confirmarPassword' placeholder='Confirma contraseña ingresada' rows={3} required/>
+                </Form.Group>
+              </Col>
+
+              <input type="hidden" name="rol" value={activeTab === "medicos" ? "MEDICO" : "USUARIO"}/>
+              
+            </Row>             
           </Form>
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleClose} disabled={cargando}>
             Cerrar
           </Button>
-          <Button variant="primary" type="submit" form="form-nuevo-usuario">
-            Guardar
+          <Button className="btn-violeta" type="submit" form="form-nuevo-usuario" disabled={cargando}>
+            {cargando ? (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" className="me-2" />
+                Guardando...
+              </>) : ("Guardar")}
           </Button>
         </Modal.Footer>
         
@@ -469,11 +550,15 @@ const handleUpdateMascota = async (e) => {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEdit}>
+          <Button variant="secondary" onClick={handleCloseEdit} disabled={cargando}>
             Cerrar
           </Button>
-          <Button className="btn-modificar" type="submit" form="form-editar-usuario">
-            Guardar cambios
+          <Button className="btn-modificar" type="submit" form="form-editar-usuario" disabled={cargando}>
+            {cargando ? (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" className="me-2" />
+                Actualizando...
+              </>) : ("Guardar cambios")}
           </Button>
         </Modal.Footer>
 

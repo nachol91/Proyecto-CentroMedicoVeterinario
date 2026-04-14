@@ -21,6 +21,23 @@ export const getTurnos = async (desde = 0) => {
   }
 };
 
+export const getTurnosByIdDueno = async (idDueno) => {
+    const token = localStorage.getItem("token");
+    try {
+        const resp = await fetch(url + "/" + idDueno, {
+            method: 'GET',
+            headers: {
+                'Content-type': "application/json; charset=UTF-8",
+                'x-token': token,
+            }
+        });
+        const data = await resp.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 export const postTurno = async (datos) => {
   const token = localStorage.getItem("token");
 

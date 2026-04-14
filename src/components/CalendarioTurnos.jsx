@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
+import Select from 'react-select';
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
+
+import logoWhatsapp from '../assets/icons/whatsapp.png';
+
 import { getTurnos, postTurno, deleteTurno, actualizarTurno, modificarTurno } from "../helpers/apiTurnos";
 import { getUsuarios } from "../helpers/apiUsuarios";
 import { mascotasGet } from "../helpers/apiMascotas";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
-import Select from 'react-select';
-import logoWhatsapp from '../assets/icons/whatsapp.png';
 
 export default function CalendarioTurnos() {
   const [eventos, setEventos] = useState([]);
@@ -246,6 +249,10 @@ export default function CalendarioTurnos() {
     }
   };
 
+  const ahora = new Date();
+  ahora.setHours(ahora.getHours() - 1);
+  const horaParaScroll = ahora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
   useEffect(() => {
     cargarTurnos();
     cargarSelects();
@@ -268,7 +275,8 @@ export default function CalendarioTurnos() {
         expandRows={true}
         height="650px"
         stickyHeaderDates={true}
-        scrollTime="08:00:00"
+        scrollTime={horaParaScroll}
+        scrollTimeReset={false}
         handleWindowResize={true}
         slotEventOverlap={false}
         selectable={true}
@@ -422,7 +430,7 @@ export default function CalendarioTurnos() {
 
       {/* MODAL PARA CREAR UN NUEVO TURNO */}
       <Modal show={showModalCrear} onHide={() => setShowModalCrear(false)} backdrop="static">
-        <Modal.Header closeButton className="bg-primary text-white">
+        <Modal.Header closeButton style={{ backgroundColor: 'var(--light-bg)' }}>
           <Modal.Title>Agendar Nuevo Turno</Modal.Title>
         </Modal.Header>
         <form onSubmit={handleCrearTurno}>

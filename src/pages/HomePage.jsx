@@ -1,4 +1,5 @@
-import { Form, Button } from "react-bootstrap";
+import { useState } from "react";
+import { Form, Button, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { FloatingWhatsApp } from "react-floating-whatsapp";
 import { authLogin } from "../helpers/apiLogin";
@@ -7,9 +8,12 @@ import "../styles/HomePage.css";
 
 export default function HomePage({ logInAdmin, logInUser, logInMedico }) {
   const navigate = useNavigate();
+  const [cargando, setCargando] = useState(false);
 
   async function logPageForm(e) {
     e.preventDefault();
+
+    setCargando(true);
 
     const correo = e.target.email.value;
 
@@ -19,10 +23,12 @@ export default function HomePage({ logInAdmin, logInUser, logInMedico }) {
 
     if (data.msg && data.msg.includes("incorrectos")) {
       alert(data.msg); // "correo o password incorrectos"//
+      setCargando(false);
       return;
     }
 
     if (data.token) {
+      
       localStorage.setItem("token", data.token);
 
       localStorage.setItem("usuario", JSON.stringify(data.usuario));
@@ -39,6 +45,7 @@ export default function HomePage({ logInAdmin, logInUser, logInMedico }) {
       navigate("/medico");
     } else {
       alert("No se pudo iniciar sesión. Intente nuevamente.");
+      setCargando(false);
     }
   }
 
@@ -55,13 +62,18 @@ export default function HomePage({ logInAdmin, logInUser, logInMedico }) {
       <div className="form-login">
         <Form onSubmit={logPageForm}>
           <Form.Group className="mb-3" controlId="email">
-            <Form.Control type="email" placeholder="Email" required />
+            <Form.Control type="email" placeholder="Email" required disabled={cargando} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="password">
-            <Form.Control type="password" placeholder="Contraseña" required />
+            <Form.Control type="password" placeholder="Contraseña" required disabled={cargando}/>
           </Form.Group>
-          <Button variant="primary" type="submit">
-            ingresar
+          <Button className="btn-violeta" type="submit" disabled={cargando}>
+            {cargando ? (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2"/>
+                Ingresando...
+              </>
+            ) : ("ingresar")}            
           </Button>
         </Form>
       </div>
