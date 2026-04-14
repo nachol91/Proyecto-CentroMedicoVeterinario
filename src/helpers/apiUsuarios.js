@@ -6,7 +6,7 @@ export const getUsuarios = async (desde = 0) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "?limite" + limite + "&desde" + desde, {
+    const resp = await fetch(url + "/" + "usuarios" + "/" + "?limite" + limite + "&desde" + desde, {
       method: "GET",
       headers: {
         "content-type": "application/json; charset=UTF-8",
@@ -26,7 +26,7 @@ export const getUsuarioByID = async (id) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "/" + id, {
+    const resp = await fetch(url + "/" + "usuarios" + "/" + id, {
       method: "GET",
       headers: {
         "content-type": "application/json; charset=UTF-8",
@@ -45,7 +45,7 @@ export const actualizarUsuario = async (id, datos) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "/" + id, {
+    const resp = await fetch(url + "/" + "usuarios" + "/" + id, {
       method: "PUT",
       body: JSON.stringify(datos),
       headers: {
@@ -71,7 +71,7 @@ export const deleteUsuario = async (id) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "/" + id, {
+    const resp = await fetch(url + "/" + "usuarios" + "/" + id, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -91,7 +91,7 @@ export const postUsuario = async (datos) => {
   
   const token = localStorage.getItem("token");
   
-  const resp = await fetch(url, {
+  const resp = await fetch(url + "/" + "usuarios", {
     method: "POST",
     body: JSON.stringify(datos),
     headers: {
@@ -114,7 +114,7 @@ export const patchUsuario = async (id) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "/" + id, {
+    const resp = await fetch(url + "/" + "usuarios" + "/" + id, {
       method: "PATCH",
       headers: {
         "Content-type": "application/json; charset=UTF-8",

@@ -5,7 +5,7 @@ export const getTurnos = async (desde = 0) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "?limite" + limite + "&desde" + desde, {
+    const resp = await fetch(url + "/" + "turnos" + "/" + "?limite" + limite + "&desde" + desde, {
       method: "GET",
       headers: {
         "content-type": "application/json; charset=UTF-8",
@@ -24,7 +24,7 @@ export const getTurnos = async (desde = 0) => {
 export const getTurnosByIdDueno = async (idDueno) => {
     const token = localStorage.getItem("token");
     try {
-        const resp = await fetch(url + "/" + idDueno, {
+        const resp = await fetch(url + "/" + "turnos" + "/" + idDueno, {
             method: 'GET',
             headers: {
                 'Content-type': "application/json; charset=UTF-8",
@@ -42,7 +42,7 @@ export const postTurno = async (datos) => {
   const token = localStorage.getItem("token");
 
   try {    
-    const resp = await fetch(url, {
+    const resp = await fetch(url + "/" + "turnos", {
       method: "POST",
       body: JSON.stringify(datos),
       headers: {
@@ -67,7 +67,7 @@ export const actualizarTurno = async (id, datos) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "/" + id, {
+    const resp = await fetch(url + "/" + "turnos" + "/" + id, {
       method: "PATCH",
       body: JSON.stringify(datos),
       headers: {
@@ -93,7 +93,7 @@ export const modificarTurno = async (id, datos) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "/" + id, {
+    const resp = await fetch(url + "/" + "turnos" + "/" + id, {
       method: "PUT",
       body: JSON.stringify(datos),
       headers: {
@@ -119,7 +119,7 @@ export const deleteTurno = async (id) => {
   const token = localStorage.getItem("token");
 
   try {
-    const resp = await fetch(url + "/" + id, {
+    const resp = await fetch(url + "/" + "turnos" + "/" + id, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
