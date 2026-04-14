@@ -164,7 +164,7 @@ export default function AdminPage() {
         password: password || undefined 
       };
 
-      const resultado = await actualizarUsuario(id, datosModificados);
+      const resultado = await actualizarUsuario(usuarioAEditar._id, datosModificados);
 
       if (resultado) {
         alert("¡Usuario actualizado correctamente!");
