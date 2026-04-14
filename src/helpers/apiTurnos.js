@@ -1,4 +1,4 @@
-const url = import.meta.env.VITE_API_URL;;
+const url = import.meta.env.VITE_API_URL;
 
 export const getTurnos = async (desde = 0) => {
   const limite = 50; 
