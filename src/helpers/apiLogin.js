@@ -1,4 +1,4 @@
-const url = "https://proyecto-centro-medico-veterinario.vercel.app/api/auth/login";
+const url = import.meta.env.VITE_API_URL;;
 
 export const authLogin = async (datos) =>{
     try {

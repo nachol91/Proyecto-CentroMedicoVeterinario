@@ -1,4 +1,4 @@
-const url = "https://proyecto-centro-medico-veterinario.vercel.app/api/mascotas"; 
+const url = import.meta.env.VITE_API_URL;; 
 
 
 export const mascotasGet = async (desde = 0) => {
