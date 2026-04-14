@@ -20,7 +20,7 @@ body {
 }
 
 .modal-body {
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .modal-footer {
@@ -102,6 +102,26 @@ body {
 }
 
 
+.grid-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px 10px;
+}
+
+
+.full-width {
+    grid-column: span 2;
+}
+
+
+.crear-usuario .modal-body, 
+.modificar-usuario .modal-body {
+    max-height: 65vh;
+    overflow-y: auto;
+    padding: 1.2rem; 
+}
+
+
 /* Responsividad */
 @media (max-width: 767px) {
   /* Celulares */
@@ -122,7 +142,7 @@ body {
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Tablet */
   .modal-body {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .btn {
@@ -138,7 +158,7 @@ body {
 @media (min-width: 1024px) and (max-width: 1439px) {
   /* Notebook */
   .modal-body {
-    padding: 1.8rem;
+    padding: 1rem;
   }
 
   .btn {
@@ -160,7 +180,7 @@ body {
 @media (min-width: 1440px) {
   /* Desktop */
   .modal-body {
-    padding: 2rem;
+    padding: 1rem;
   }
 
   .btn {
@@ -176,5 +196,14 @@ body {
     width: auto !important;
     min-width: 150px !important;
     max-width: 220px !important;
+  }
+
+  .grid-form {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+  .full-width {
+    grid-column: span 2;
   }
 }

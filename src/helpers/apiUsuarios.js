@@ -1,7 +1,7 @@
 const url = "https://proyecto-centro-medico-veterinario.vercel.app/api/usuarios";
 
 export const getUsuarios = async (desde = 0) => {
-  const limite = 10;
+  const limite = 20;
 
   const token = localStorage.getItem("token");
 

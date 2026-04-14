@@ -13,14 +13,15 @@
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     background-color: white;
-    table-layout: fixed;
+    table-layout: auto;
 }
 
 .table thead th,
 .table tbody td {
     
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
 }
 
 .table th:last-child,
@@ -41,29 +42,6 @@
     width: auto;
     white-space: normal;
 }
-@media (max-width: 992px) {
-    .table {
-        table-layout: auto;
-    }
-
-    .table thead th,
-    .table tbody td {
-        
-        font-size: 0.8rem;
-    }
-
-    .table td .btn,
-    .table .btn-ver,
-    .table .btn-modificar,
-    .table .btn-danger {
-        min-width: 70px;
-        max-width: 120px;
-        padding: 0.25rem 0.45rem;
-        font-size: 0.75rem;
-    }
-}
-
-
 
 .table thead th {
     background-color: var(--primary-color);
@@ -101,11 +79,19 @@
 
 .table thead th:nth-child(2),
 .table tbody td:nth-child(2),
-.table thead th:nth-child(3),
-.table tbody td:nth-child(3),
 .table thead th:nth-child(5),
 .table tbody td:nth-child(5) {
   min-width: 80px;
+}
+
+.table thead th:nth-child(3),
+.table tbody td:nth-child(3) {
+  min-width: 110px !important;
+}
+
+.table thead th:nth-child(9),
+.table tbody td:nth-child(9) {
+  min-width: 100px !important;
 }
 
 .table tbody tr {
@@ -155,25 +141,7 @@
     color: var(--primary-hover) !important;
 }
 
-@media (min-width: 1024px) {
-    .table .btn-ver {
-        font-size: 0.85rem;
-        padding: 0.3rem 0.45rem;
-        min-width: 105px;
-        max-width: 135px;
-    }
 
-    .table td:last-child {
-        min-width: 175px;
-        max-width: 220px;
-    }
-
-    .table td .d-flex {
-        flex-wrap: nowrap;
-        justify-content: flex-end;
-        gap: 0.35rem;
-    }
-}
 
 .table td .btn-modificar {
     background-color: #4f2f90 !important;
@@ -225,14 +193,6 @@
     border-color: #bd2130;
 }
 
-@media (max-width: 767px) {
-  .table td .d-flex .btn {
-    min-width: 48px;
-    max-width: 65px;
-    font-size: 0.68rem;
-    padding: 0.2rem 0.35rem;
-  }
-}
 
 /* Responsividad */
 @media (max-width: 767px) {
@@ -261,7 +221,37 @@
     font-size: 0.55rem;
     padding: 0.15rem 0.3rem;
   }
+
+  .table td .d-flex .btn {
+    min-width: 48px;
+    max-width: 65px;
+    font-size: 0.68rem;
+    padding: 0.2rem 0.35rem;
+  }
 }
+
+@media (max-width: 992px) {
+    .table {
+        table-layout: auto;
+    }
+
+    .table thead th,
+    .table tbody td {
+        
+        font-size: 0.8rem;
+    }
+
+    .table td .btn,
+    .table .btn-ver,
+    .table .btn-modificar,
+    .table .btn-danger {
+        min-width: 70px;
+        max-width: 120px;
+        padding: 0.25rem 0.45rem;
+        font-size: 0.75rem;
+    }
+}
+
 
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Tablet */
@@ -299,6 +289,24 @@
     font-size: 0.75rem;
     padding: 0.35rem 0.7rem;
   }
+
+  .table .btn-ver {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.45rem;
+        min-width: 105px;
+        max-width: 135px;
+    }
+
+    .table td:last-child {
+        min-width: 175px;
+        max-width: 220px;
+    }
+
+    .table td .d-flex {
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 0.35rem;
+    }
 }
 
 @media (min-width: 1440px) {

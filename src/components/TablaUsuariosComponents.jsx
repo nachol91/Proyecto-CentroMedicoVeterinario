@@ -1,7 +1,7 @@
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Spinner } from 'react-bootstrap';
 import "../styles/TablaUsuarios.css";
 
-export default function TablaUsuariosComponents({ abrirEditor, usuarios, eliminarUsuario, handleVerMascotas }) {
+export default function TablaUsuariosComponents({ abrirEditor, usuarios, eliminarUsuario, handleVerMascotas, cargando }) {
 
    return (
     <div className="tabla-usuarios">
@@ -38,8 +38,8 @@ export default function TablaUsuariosComponents({ abrirEditor, usuarios, elimina
                                     })}
                                 </td>
                                 <td>
-                                    <Button className="btn-ver" onClick={() => handleVerMascotas(usuario)}>
-                                        Ver Mascotas
+                                    <Button className="btn-ver" onClick={() => handleVerMascotas(usuario)} disabled={cargando !== null}>
+                                        {cargando === usuario._id ? (<Spinner as="span" animation="border" size="sm" />) : ("Ver Mascotas")}                                        
                                     </Button> 
                                 </td>
                                 <td>
