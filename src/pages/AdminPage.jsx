@@ -494,7 +494,7 @@ export default function AdminPage() {
                 </Form.Group>
               </Col>
 
-              <input type="hidden" name="rol" value={activeTab === "medicos" ? "MEDICO" : "USUARIO"}/>
+              <input type="hidden" name="rol" value={activeTab === "medicos" ? "MEDICO" : "USER"}/>
               
             </Row>             
           </Form>
