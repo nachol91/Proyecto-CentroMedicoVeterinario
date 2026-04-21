@@ -9,6 +9,8 @@ import wp from "../assets/icons/whatsapp.png";
 import pacientesCard from "../assets/img/pacientesCard.jpeg";
 import turnosCard from "../assets/img/turnos.jpg"
 
+import Swal from 'sweetalert2';
+
 // Componentes y Helpers (Usando el nombre EXACTO de tu export)
 import TablaMascotasUsuario from "../components/TablaMascotasUsuario";
 import { getUsuarioByID } from "../helpers/apiUsuarios";
@@ -39,23 +41,30 @@ export default function UserPage() {
       const data = await mascotasGetIdDueno(idDueno);
       setMascotas(data.mascotas || []);
     } catch (error) {
-      console.error("Error al traer las mascotas:", error);
-      alert("No se pudieron traer las mascotas del usuario");
+      Swal.fire({
+        title: "Error",
+        text: "No se pudieron obtener las mascotas del usuario",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
     }finally{
       setCargando(false);
-    }
-    
+    }    
   };
 
  const obtenerTurnos = async () => {
     setCargando(true);
     try {
-        const usuarioConectado = JSON.parse(localStorage.getItem("usuario"));
-        const data = await getTurnosByIdDueno(usuarioConectado._id);
-        
-        setTurnos(data.turnos || []); 
+      const usuarioConectado = JSON.parse(localStorage.getItem("usuario"));
+      const data = await getTurnosByIdDueno(usuarioConectado._id);        
+      setTurnos(data.turnos || []); 
     } catch (error) {
-        console.error("Error al traer los turnos:", error);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudieron obtener los turnos del usuario",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
     } finally {
         setCargando(false);
     }

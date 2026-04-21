@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Select from 'react-select';
 
+import Swal from 'sweetalert2';
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -61,7 +63,12 @@ export default function CalendarioTurnos() {
     
     setMedicos(profesionalesHabilitados);
   } catch (error) {
-    console.error("Error al cargar datos de los selectores", error);
+    Swal.fire({
+        title: "Error",
+        text: "No se pudo conectar con el servidor",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
   }
   };
 
@@ -70,27 +77,30 @@ export default function CalendarioTurnos() {
       const respuesta = await getTurnos();
       if (respuesta && respuesta.turnos){
         const turnosFormateados = respuesta.turnos.map((turno) => {
-        const fechaInicio = new Date(turno.fecha);
-        const fechaFin = new Date(fechaInicio.getTime() + 30 * 60000);
-        return {
-          id: turno._id,
-          title: `${turno.mascota?.nombre || 'Paciente'} - ${turno.tipoDeEstudio}`, 
-          start: turno.fecha,
-          end: fechaFin.toISOString(),
-          editable: turno.estado === "PENDIENTE",
-          backgroundColor:turno.estado === "PENDIENTE" ? "#6f42c1" : 
-                          turno.estado === "REALIZADO" ? "#28a745" : "#dc3545",
-          borderColor:turno.estado === "PENDIENTE" ? "#6f42c1" : 
-                      turno.estado === "REALIZADO" ? "#28a745" : "#dc3545",
-          extendedProps: { ...turno, _id: turno._id }
+          const fechaInicio = new Date(turno.fecha);
+          const fechaFin = new Date(fechaInicio.getTime() + 30 * 60000);
+          return {
+            id: turno._id,
+            title: `${turno.mascota?.nombre || 'Paciente'} - ${turno.tipoDeEstudio}`, 
+            start: turno.fecha,
+            end: fechaFin.toISOString(),
+            editable: turno.estado === "PENDIENTE",
+            backgroundColor:turno.estado === "PENDIENTE" ? "#6f42c1" : 
+                            turno.estado === "REALIZADO" ? "#28a745" : "#dc3545",
+            borderColor:turno.estado === "PENDIENTE" ? "#6f42c1" : 
+                        turno.estado === "REALIZADO" ? "#28a745" : "#dc3545",
+            extendedProps: { ...turno, _id: turno._id }
           };
         });
-
       
-      setEventos(turnosFormateados);
-      };      
+      setEventos(turnosFormateados)};      
     } catch (error) {
-      console.error("Error al cargar los turnos:", error);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo conectar con el servidor",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
     }
   };
   
@@ -110,7 +120,12 @@ export default function CalendarioTurnos() {
     const ahora = new Date();
   
     if (fechaSeleccionada < ahora) {
-      alert("No se pueden agendar turnos en fechas o horarios pasados.");
+        Swal.fire({
+          title: "Error",
+          text: "No se puede cargar un turno en una fecha y hora pasada",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
       selectInfo.view.calendar.unselect();
       return;
     }    
@@ -134,7 +149,6 @@ export default function CalendarioTurnos() {
   
   try {
     if (!nuevoTurno.mascota || !nuevoTurno.medico || !nuevoTurno.dueno) {
-      alert("Faltan datos obligatorios: Mascota, Médico o Dueño.");
       return;
     }
 
@@ -145,13 +159,23 @@ export default function CalendarioTurnos() {
 
     const respuesta = await postTurno(turnoAGuardar);
 
-    alert("¡Turno agendado con éxito!");
+    Swal.fire({
+      title: "¡Éxito!",
+      text: "El Turno se cargó correctamente",
+      icon: "success",
+      confirmButtonColor: "#6f42c1",
+    });;
     setShowModalCrear(false);
     await cargarTurnos(); 
 
   } catch (error) {
-    alert("Error al guardar: " + error.message);
-  }
+    Swal.fire({
+      title: "Error",
+      text: "No se pudo conectar con el servidor",
+      icon: "error",
+      confirmButtonColor: "#d33",
+    });
+    }
   };
 
   const handleFinalizarAtencion = async () => {
@@ -160,12 +184,17 @@ export default function CalendarioTurnos() {
     try {
       await actualizarTurno(turnoSeleccionado._id, { estado: "REALIZADO" });
 
-      alert("¡Consulta Finalizada!");
+      Swal.fire("Consulta Finalizada!");
       handleClose();
       await cargarTurnos(); 
       
     } catch (error) {
-      alert("Error: " + error.message);
+      Swal.fire({
+      title: "Error",
+      text: "No se pudo conectar con el servidor",
+      icon: "error",
+      confirmButtonColor: "#d33",
+      });
     }
   };
 
@@ -182,12 +211,17 @@ export default function CalendarioTurnos() {
     try {
       const respuesta = await modificarTurno(turnoSeleccionado._id, cuerpoParaEnviar);
       
-      alert("¡Turno modificado con éxito!");
+      Swal.fire("¡Turno modificado con éxito!");
       setEditando(false);
       handleClose();
       await cargarTurnos();
     } catch (error) {
-      alert("Error al modificar: " + error.message);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo conectar con el servidor",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
@@ -199,7 +233,12 @@ export default function CalendarioTurnos() {
     const ahora = new Date();
 
     if (nuevaFecha < ahora) {
-      alert("No puedes reprogramar un turno a una fecha/hora pasada.");
+      Swal.fire({
+          title: "Error",
+          text: "No se reprogramar un turno en una fecha y hora pasada",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
       info.revert();
       return;
     }
@@ -214,10 +253,20 @@ export default function CalendarioTurnos() {
 
     try {
       await modificarTurno(idTurno, cuerpoEdicion);
-      alert("Turno reprogramado con éxito");
+      Swal.fire({
+        icon: "success",
+        title: "Turno reprogramado con éxito!",
+        showConfirmButton: false,
+        timer: 2000
+      });
       await cargarTurnos(); 
     } catch (error) {
-      alert("Error al reprogramar: " + error.message);
+        Swal.fire({
+            title: "Error",
+            text: "No se pudo conectar con el servidor",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
       info.revert(); 
     }
   };
@@ -228,23 +277,46 @@ export default function CalendarioTurnos() {
     const idABorrar = turnoSeleccionado?._id || turnoSeleccionado?.id;
 
     if (!idABorrar) {
-      alert("Error: No se pudo encontrar el identificador del turno.");
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo encontrar el identificador del turno.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });      
       return;
     }
 
-    const confirmar = window.confirm(`¿Estás seguro de que deseas eliminar el turno de ${turnoSeleccionado.mascota?.nombre}?`);
+    const resultado = await Swal.fire({
+      title: `¿Estás seguro de que desea eliminar el turno de ${turnoSeleccionado.mascota?.nombre}?`,
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#6f42c1",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar"
+    });
 
-    if (confirmar) {
+    if (resultado.isConfirmed) {
       try {
         const respuesta = await deleteTurno(idABorrar);
 
-        alert("Turno eliminado correctamente");
+        Swal.fire({
+          icon: "success",
+          title: "Turno eliminado con éxito!",
+          showConfirmButton: false,
+          timer: 2000
+        });
         handleClose();
         await cargarTurnos(); 
 
       } catch (error) {
-        alert("Error al intentar eliminar el turno");
-        console.error(error);
+        Swal.fire({
+          title: "Error",
+          text: "error al eliminar el turno, intente nuevamente.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        }); 
       }
     }
   };

@@ -14,9 +14,11 @@ export const getTurnos = async (desde = 0) => {
     });
 
     const data = await resp.json();
+    if (!resp.ok) {
+      throw new Error("Error al obtener los turnos de la base de datos");
+    }
     return data;
   } catch (error) {
-    console.log(error);
     throw new Error("No se pueden obtener los turnos!");
   }
 };
@@ -24,17 +26,20 @@ export const getTurnos = async (desde = 0) => {
 export const getTurnosByIdDueno = async (idDueno) => {
     const token = localStorage.getItem("token");
     try {
-        const resp = await fetch(url + "/" + "turnos" + "/" + idDueno, {
-            method: 'GET',
-            headers: {
-                'Content-type': "application/json; charset=UTF-8",
-                'x-token': token,
-            }
-        });
-        const data = await resp.json();
-        return data;
+      const resp = await fetch(url + "/" + "turnos" + "/" + idDueno, {
+        method: 'GET',
+        headers: {
+          'Content-type': "application/json; charset=UTF-8",
+          'x-token': token,
+        }
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        throw new Error("Error al obtener el turno de la base de datos");
+      }
+      return data;
     } catch (error) {
-        console.error(error);
+      throw new Error("No se pudo conectar con el servidor");
     }
 };
 
@@ -54,12 +59,11 @@ export const postTurno = async (datos) => {
     const data = await resp.json();
 
     if (!resp.ok) {
-      throw new Error(data.msg || "Error al crear el turno en la base de datos");
+      throw new Error("Error al crear el turno en la base de datos");
     }
     return data;
     } catch (error) {
-    console.error("HELPER ERROR:", error); // <--- LOG 3
-    throw error;
+    throw new Error("No se pudo conectar con el servidor");
   }  
 }
 
@@ -79,13 +83,12 @@ export const actualizarTurno = async (id, datos) => {
     const data = await resp.json();
 
     if (!resp.ok) {
-      throw new Error(data.msg || "Error al actualizar el turno");
+      throw new Error("Error al actualizar el turno");
     }
 
     return data;
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error("No se pudo conectar con el servidor");
   }
 };
 
@@ -105,13 +108,11 @@ export const modificarTurno = async (id, datos) => {
     const data = await resp.json();
 
     if (!resp.ok) {
-      throw new Error(data.msg || "Error al modificar el turno");
+      throw new Error("Error al modificar el turno");
     }
-
     return data;
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error("No se pudo conectar con el servidor");
   }
 };
 
@@ -128,9 +129,11 @@ export const deleteTurno = async (id) => {
     });
 
     const data = await resp.json();
+     if (!resp.ok) {
+      throw new Error("Error al eliminar el turno");
+    }
     return data;
   } catch (error) {
-    console.error(error);
-    return { msg: "No se conectó con la base de datos!" };
+    throw new Error("No se pudo conectar con el servidor");
   }
 };

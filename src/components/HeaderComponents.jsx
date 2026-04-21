@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import { actualizarUsuario } from '../helpers/apiUsuarios';
 import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+
+import Swal from 'sweetalert2';
+
+import { actualizarUsuario } from '../helpers/apiUsuarios';
+
 import logo from "../assets/img/logo-sin-BG.png";
 import avatar from "../assets/icons/icono-avatar.png";
 import "../styles/HeaderComponents.css";
@@ -39,10 +43,22 @@ export default function HeaderComponents() {
 
     if (nuevoPassword) {
         if (nuevoPassword !== confirmarPassword) {
-          return alert("Las nuevas contraseñas no coinciden");
+          Swal.fire({
+            title: "Error",
+            text: "Las nuevas contraseñas deben ser iguales",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
+          return;
         }
         if (nuevoPassword.length < 8) {
-          return alert("La nueva contraseña debe tener al menos 8 caracteres");
+          Swal.fire({
+            title: "Error",
+            text: "La nueva contraseña debe tener al menos 8 caracteres",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
+          return
         }
     };
 
@@ -59,21 +75,42 @@ export default function HeaderComponents() {
 
       if(resultados){
         localStorage.setItem("usuario", JSON.stringify(resultados.usuario));
-        alert("los datos se actualizaron correctamente")
+        Swal.fire({
+          icon: "success",
+          title: "los datos se actualizaron correctamente",
+          showConfirmButton: false,
+          timer: 2000
+        });
         handleClose();}          
       }catch (error) {
-        console.error(error);
-        alert(error.message || "error al conectar al servidor")
+        Swal.fire({
+          title: "Error",
+          text: "Error al conectar con el servidor",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
       }
   };
   
-  const cerrarSesion = (e) => {
+  const cerrarSesion = async (e) => {
     e.preventDefault();
     
-    const confirmar = window.confirm("Esta seguro que desea cerrar sesión?");
-    if (confirmar) {
-      localStorage.clear();
-      navigate("/");
+    const resultado = await Swal.fire({
+      title: "Esta seguro que desea cerrar sesión?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#6f42c1",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí",
+      cancelButtonText: "Cancelar"
+    });
+    if (resultado.isConfirmed) {
+      try{
+        localStorage.clear();
+        navigate("/");
+      }catch (error){
+        Swal.fire("error al cerrar cesion")
+      }      
     }
   };
   
@@ -119,7 +156,7 @@ export default function HeaderComponents() {
           <Form id="form-mis-datos" onSubmit={handleSave}>
             <Form.Group className="mb-3" controlId="correo">
               <Form.Label>Correo</Form.Label>
-              <Form.Control type="email" name='correo' defaultValue={correo} autoFocus/>
+              <Form.Control type="email" name='correo' autoComplete="username" defaultValue={correo} autoFocus/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="telefono">
               <Form.Label>Telefono</Form.Label>
@@ -127,15 +164,15 @@ export default function HeaderComponents() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Contraseña actual(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='passwordActual' placeholder='ingresa tu contraseña actual'/>
+              <Form.Control type="password" name='passwordActual' autoComplete="current-password" placeholder='ingresa tu contraseña actual'/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Nueva contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='nuevoPassword' placeholder='ingrese la nueva contraseña (min 8 caracteres)'/>
+              <Form.Control type="password" name='nuevoPassword' autoComplete="new-password" placeholder='ingrese la nueva contraseña (min 8 caracteres)'/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Confirmar contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='confirmarPassword' placeholder='repita la contraseña'/>
+              <Form.Control type="password" name='confirmarPassword' autoComplete="new-password" placeholder='repita la contraseña'/>
             </Form.Group>            
           </Form>
         </Modal.Body>

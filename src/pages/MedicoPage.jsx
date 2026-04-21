@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button, Card, Form, Modal, Spinner, Row, Col } from "react-bootstrap";
 
+import Swal from 'sweetalert2';
+
 //iconos y assets
 import inicio from "../assets/icons/cucha.png";
 import pacientes from "../assets/icons/nosotros.png";
@@ -73,62 +75,100 @@ export default function AdminPage() {
   }; 
 
   const eliminarUsuario = async (id) => {
-    const confirmacion = window.confirm("¿Estás seguro de eliminar este usuario?");
-    
-    if (!confirmacion) return;
-
-    try {
-      await deleteUsuario(id);
-      alert("Usuario eliminado con éxito!");
-      obtenerUsuarios()
-      
-    }catch (error) {
-      console.error("Error al eliminar: ", error);
-      alert("No se pudo eliminar el usuario. Inténtelo de nuevo más tarde.");
-    }
+    const resultado = await Swal.fire({
+      title: "¿Estás seguro de eliminar este usuario?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#6f42c1",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí",
+      cancelButtonText: "Cancelar"
+    });
+    if(resultado.isConfirmed){
+      try {
+        await deleteUsuario(id);
+        Swal.fire({
+          icon: "success",
+          title: "Usuario eliminado con éxito!",
+          showConfirmButton: false,
+          timer: 2000
+        });
+        obtenerUsuarios();      
+      }catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo eliminar el usuario. Inténtelo de nuevo más tarde.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
+      }
+    }    
   };
    
   const handleSave = async(e) =>{
-    
-    e.preventDefault();
-    setCargando(true);
-    
-    const nombre= e.target.nombre.value;
-    const apellido= e.target.apellido.value;
-    const correo= e.target.correo.value;
-    const telefono= e.target.telefono.value;
-    const nivel= e.target.rol.value;
-    const password= e.target.password.value;
-    const confirmarPassword= e.target.confirmarPassword.value;
-    
-    if (password.length > 0) {
+      
+      e.preventDefault();
+      setCargando(true);
+      
+      const nombre= e.target.nombre.value;
+      const apellido= e.target.apellido.value;
+      const correo= e.target.correo.value;
+      const telefono= e.target.telefono.value;
+      const nivel= e.target.rol.value;
+      const password= e.target.password.value;
+      const confirmarPassword= e.target.confirmarPassword.value;
+      
+      if (password.length > 0) {
         if (password !== confirmarPassword) {
           setCargando(false);
-          return alert("Las contraseñas no coinciden");
-        }
-        if (password.length < 8) {
-          return alert("La contraseña debe tener al menos 8 caracteres");
-        }
-    }
-    
-    const dataUsuario ={ nombre, apellido, correo, telefono, nivel, password };
-
-    try {
-      const resultado = await postUsuario(dataUsuario);
-
-      if(resultado){
-        alert("El usuario se cargo correctamente!");
-        e.target.reset();
-        handleClose();
-
-        obtenerUsuarios();
-      };
-    }catch (error) {
-      console.error(error);
-      alert(error.message || "error al conectar al servidor")
-    } finally{
-      setCargando(false);
-    }
+          Swal.fire({
+            title: "Error",
+            text: "Las contraseñas no coinciden",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
+          return;
+        }      
+      }
+  
+      if (password.length < 8) {
+        setCargando(false);
+        Swal.fire({
+          title: "Error",
+          text: "La contraseña debe tener al menos 8 caracteres",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
+        return;          
+      }
+      
+      const dataUsuario ={ nombre, apellido, correo, telefono, nivel, password };
+  
+      try {
+        const resultado = await postUsuario(dataUsuario);
+  
+        if(resultado){
+          Swal.fire({
+            icon: "success",
+            title: "El usuario se cargo correctamente!",
+            showConfirmButton: false,
+            timer: 2300
+          });
+          e.target.reset();
+          handleClose();
+  
+          obtenerUsuarios();
+        };
+      }catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: "error al conectar al servidor",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        });
+      } finally{
+        setCargando(false);
+      }
   };
 
   const edicionUsuarioClick = (usuario) => {
@@ -136,46 +176,61 @@ export default function AdminPage() {
   setShowEdit(true);
   };
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    setCargando(true);
-    
-    try {
-      const id = usuarioAEditar._id;
-      const nuevoEstado = e.target.estado.value === "true";
-
-      if (nuevoEstado !== usuarioAEditar.estado) {
-        await patchUsuario(id, { estado: nuevoEstado });
+   const handleUpdate = async (e) => {
+      e.preventDefault();
+      setCargando(true);
+      
+      try {
+        const id = usuarioAEditar._id;
+        const nuevoEstado = e.target.estado.value === "true";
+  
+        if (nuevoEstado !== usuarioAEditar.estado) {
+          await patchUsuario(id, { estado: nuevoEstado });
+        }
+  
+        const password = e.target.nuevoPassword.value;
+        const confirmar = e.target.confirmarPassword.value;
+  
+        if (password && password !== confirmar) {
+          Swal.fire({
+            title: "Error",
+            text: "Las contraseñas no coinciden",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
+          return;
+        }
+  
+        const datosModificados = {
+          correo: e.target.correo.value,
+          telefono: e.target.telefono.value,
+          password: password || undefined 
+        };
+  
+        const resultado = await actualizarUsuario(usuarioAEditar._id, datosModificados);
+  
+        if (resultado) {
+          Swal.fire({
+            icon: "success",
+            title: "¡Usuario actualizado correctamente!",
+            showConfirmButton: false,
+            timer: 2000
+          });
+          e.target.reset();
+          handleCloseEdit();
+  
+          obtenerUsuarios();        
+        }
+      } catch (error) {
+        Swal.fire({
+            title: "Error",
+            text: "Error al actualizar el usuario",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
+      } finally{
+        setCargando(false);
       }
-
-      const password = e.target.nuevoPassword.value;
-      const confirmar = e.target.confirmarPassword.value;
-
-      if (password && password !== confirmar) {
-        return alert("Las contraseñas no coinciden");
-      }
-
-      const datosModificados = {
-        correo: e.target.correo.value,
-        telefono: e.target.telefono.value,
-        password: password || undefined 
-      };
-
-      const resultado = await actualizarUsuario(id, datosModificados);
-
-      if (resultado) {
-        alert("¡Usuario actualizado correctamente!");
-        e.target.reset();
-        handleCloseEdit();
-
-        obtenerUsuarios();        
-      }
-    } catch (error) {
-      console.error(error)
-      alert("Error al actualizar: " + error.message);
-    } finally{
-      setCargando(false);
-    }
   };
 
   //hooks y funciones de mascotas//
@@ -222,17 +277,25 @@ export default function AdminPage() {
     try {
       const resultado = await mascotaPost(dataMascota);
       if (resultado) {
-        alert("Mascota creada con éxito");
+        Swal.fire({
+          icon: "success",
+          title: "Mascota creada con éxito",
+          showConfirmButton: false,
+          timer: 2000
+        });
         e.target.reset();
         setShowCrearMascota(false);
   
         handleVerMascotas(usuarioSeleccionado); 
       };      
     } catch (error) {
-      console.error(error);
-      alert(error.message || "error al conectar al servidor")      
-    }
-    
+      Swal.fire({
+        title: "Error",
+        text: "Error al conectar con el servidor",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });          
+    }    
   };
 
   const handleVerMascotas = async(usuario) =>{
@@ -245,8 +308,12 @@ export default function AdminPage() {
       setMascotas(data.mascotas || []);
       setShowModalMascotas(true);
     }catch(error){
-      console.error("Error al traer las mascotas:", error);
-      alert("No se pudieron traer las mascotas del usuario");
+      Swal.fire({
+        title: "Error",
+        text: "No se pudieron obtener las mascotas del usuario",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
     }finally{
       setCargandoId(null);
     }    
@@ -259,28 +326,48 @@ export default function AdminPage() {
   };
 
   const handleEliminarMascota = async (id) => {
-  const confirmar = window.confirm("¿Estás seguro de que deseas eliminar esta mascota?");
-  if (!confirmar) return;
+  
+  const resultado = await Swal.fire({
+    title: "¿Estás seguro de que deseas eliminar esta mascota?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#6f42c1",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Sí",
+    cancelButtonText: "Cancelar"
+  });
 
-  try {
-    const resultado = await mascotaDelete(id);
-    if (resultado) {
-      alert("Mascota eliminada con éxito");
-      handleVerMascotas(usuarioSeleccionado);
-    }
-  } catch (error) {
-    alert("Error al eliminar la mascota");
+  if(resultado.isConfirmed){
+    try {
+      const resultado = await mascotaDelete(id);
+      if (resultado) {
+        Swal.fire({
+            icon: "success",
+            title: "Mascota eliminada con éxito",
+            showConfirmButton: false,
+            timer: 2000
+          });
+        handleVerMascotas(usuarioSeleccionado);
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Error al eliminar la mascota",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      })}
   }
-};
+  
+  };
 
-const edicionMascotaClick = (mascota) => {
-  setMascotaAEditar(mascota);
-  setShowEditMascota(true);
-};
+  const edicionMascotaClick = (mascota) => {
+    setMascotaAEditar(mascota);
+    setShowEditMascota(true);
+  };
 
-const handleUpdateMascota = async (e) => {
+  const handleUpdateMascota = async (e) => {
     e.preventDefault();
-    
+
     try {
       const id = mascotaAEditar._id;
       const nuevoEstado = e.target.estado.value === "true";
@@ -293,25 +380,33 @@ const handleUpdateMascota = async (e) => {
         edad: Number(e.target.edad.value), 
         NuevaHistoriaClinica: e.target.nuevaHistoria.value
       };
-    
-        const resultado = await mascotaPut(mascotaAEditar._id, dataUpdate);
-        
-        if (resultado) {
-            alert("¡Registro actualizado con éxito!");
-            setShowEditMascota(false);
-            e.target.reset(); 
-            handleVerMascotas(usuarioSeleccionado);
-        }
+      
+      const resultado = await mascotaPut(mascotaAEditar._id, dataUpdate);
+          
+      if (resultado) {
+        Swal.fire({
+          icon: "success",
+          title: "¡Registro actualizado con éxito!",
+          showConfirmButton: false,
+          timer: 2000
+        });
+        setShowEditMascota(false);
+        e.target.reset(); 
+        handleVerMascotas(usuarioSeleccionado);
+      }
     } catch (error) {
-        console.error(error);
-        alert("Error al actualizar los datos");
-    }
-};
+        Swal.fire({
+        title: "Error",
+        text: "Error al actualizar los datos",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });          
+    };
+  };
 
 
   return (
-    <main className="admin-page">
-      
+    <main className="admin-page">      
       <aside className="aside-main">
         <nav className="aside-nav">
           <button
@@ -341,20 +436,7 @@ const handleUpdateMascota = async (e) => {
             <img src={turnos} alt="Turnos" className="aside-custom-icon" />
             <span>Turnos</span>
           </button>
-
         </nav>
-
-        <div className="aside-footer">
-          <hr />
-          <p>Si tenés alguna duda o consulta envíanos un mensaje</p>
-          <a
-            href="https://wa.me/+5492214184682"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img src={wp} alt="Whatsapp" className="whatsapp-custom-icon" />
-          </a>
-        </div>
       </aside>
 
       <section className="content-main">
@@ -461,7 +543,7 @@ const handleUpdateMascota = async (e) => {
                 </Form.Group>
               </Col>
 
-              <input type="hidden" name="rol" value={activeTab === "medicos" ? "MEDICO" : "USUARIO"}/>
+              <input type="hidden" name="rol" value={"USER"}/>
               
             </Row>             
           </Form>
