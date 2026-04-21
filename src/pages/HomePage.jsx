@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Form, Button, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { FloatingWhatsApp } from "react-floating-whatsapp";
+import Swal from 'sweetalert2';
+
 import { authLogin } from "../helpers/apiLogin";
+
 import logo from "../assets/img/logo-sin-BG.png";
 import "../styles/HomePage.css";
 
@@ -10,44 +13,49 @@ export default function HomePage({ logInAdmin, logInUser, logInMedico }) {
   const navigate = useNavigate();
   const [cargando, setCargando] = useState(false);
 
+
   async function logPageForm(e) {
-    e.preventDefault();
+  e.preventDefault();
+  setCargando(true);
 
-    setCargando(true);
+  const correo = e.target.email.value;
+  const password = e.target.password.value;
 
-    const correo = e.target.email.value;
-
-    const password = e.target.password.value;
-
-    const data = await authLogin({ correo, password });
-
-    if (data.msg && data.msg.includes("incorrectos")) {
-      alert(data.msg); // "correo o password incorrectos"//
-      setCargando(false);
-      return;
-    }
-
-    if (data.token) {
-      
-      localStorage.setItem("token", data.token);
-
-      localStorage.setItem("usuario", JSON.stringify(data.usuario));
-    }
-
-    if (data.usuario.nivel === "ADMIN") {
-      logInAdmin();
-      navigate("/admin");
-    } else if (data.usuario.nivel === "USER") {
-      logInUser();
-      navigate("/user");
-    } else if (data.usuario.nivel === "MEDICO") {
-      logInMedico();
-      navigate("/medico");
-    } else {
-      alert("No se pudo iniciar sesión. Intente nuevamente.");
-      setCargando(false);
-    }
+  const data = await authLogin({ correo, password });
+ 
+  if (!data.token) {
+    Swal.fire({
+      title: "Error de ingreso",
+      text: "Credenciales incorrectas, comuniquese con el Administrador",
+      icon: "error",
+      confirmButtonColor: "#6f42c1",
+    });
+    setCargando(false);
+    return;
   }
+ 
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("usuario", JSON.stringify(data.usuario));
+  
+  if (data.usuario.nivel === "ADMIN") {
+    logInAdmin();
+    navigate("/admin");
+  } else if (data.usuario.nivel === "USER") {
+    logInUser();
+    navigate("/user");
+  } else if (data.usuario.nivel === "MEDICO") {
+    logInMedico();
+    navigate("/medico");
+  } else {
+    Swal.fire({
+      title: "Error",
+      text: "No tiene acceso a la página",
+      icon: "error",
+      confirmButtonColor: "#d33",
+    });
+    setCargando(false);
+  }
+  };
 
   return (
     <main className="main-login">
@@ -62,10 +70,10 @@ export default function HomePage({ logInAdmin, logInUser, logInMedico }) {
       <div className="form-login">
         <Form onSubmit={logPageForm}>
           <Form.Group className="mb-3" controlId="email">
-            <Form.Control type="email" placeholder="Email" required disabled={cargando} />
+            <Form.Control type="email" placeholder="Email" autoComplete="username" required disabled={cargando} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="password">
-            <Form.Control type="password" placeholder="Contraseña" required disabled={cargando}/>
+            <Form.Control type="password" placeholder="Contraseña" required autoComplete="current-password" disabled={cargando}/>
           </Form.Group>
           <Button className="btn-violeta" type="submit" disabled={cargando}>
             {cargando ? (

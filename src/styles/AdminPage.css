@@ -182,7 +182,7 @@ h2 {
 .fc-event {
     background-color: var(--primary-color, #6f42c1) !important;
     border-color: var(--primary-color, #6f42c1) !important;
-    color: white !important; /* Texto en blanco para que resalte */
+    color: white !important; 
 }
 
 
@@ -212,7 +212,7 @@ h2 {
 
 .fc .fc-timegrid-now-indicator-line {
     border-color: var(--primary-color) !important;
-}
+} 
 
 .fc .fc-timegrid-now-indicator-arrow {
     border-top-color: var(--primary-color) !important;

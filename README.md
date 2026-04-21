@@ -1,16 +1,33 @@
-# React + Vite
+# CeDiVe - Centro Médico Veterinario (Frontend) 🐾
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es el frontend de **CeDiVe**, una aplicación web integral diseñada para la gestión de una clínica veterinaria. El sistema permite administrar usuarios, pacientes (mascotas), turnos médicos y recetas(en la siguiente versión) de forma eficiente y segura.
 
-Currently, two official plugins are available:
+## 🚀 Características Principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Gestión de Usuarios y Médicos:** Panel administrativo para crear, editar y dar de baja usuarios con diferentes niveles de acceso (ADMIN, MEDICO, USER).
+- **Sistema de Pacientes:** Registro detallado de mascotas vinculado a sus dueños, incluyendo especie, raza, peso e historial clínico.
+- **Autenticación y Seguridad:** - Rutas protegidas mediante verificaciones síncronas y asíncronas.
+  - Manejo de sesiones volátiles con `sessionStorage`.
+- **Interfaz Administrativa:** Panel lateral (Sidebar) con navegación fluida para gestionar turnos, y bases de datos de pacientes.
+- **Validaciones de UI:** Manejo de estados de carga (Spinners) y validaciones de formularios en tiempo real.
 
-## React Compiler
+## 🛠️ Tecnologías Utilizadas
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- **React.js**: Biblioteca principal para la construcción de la interfaz.
+- **Vite**: Herramienta de construcción para un entorno de desarrollo rápido.
+- **React Bootstrap**: Framework de componentes para un diseño responsive y profesional.
+- **React Router DOM**: Gestión de navegación y protección de rutas.
+- **JWT (JSON Web Tokens)**: Manejo de tokens para sesiones seguras.
+- **CSS3**: Estilos personalizados para la identidad visual de CeDiVe.
 
-## Expanding the ESLint configuration
+## 📦 Estructura del Proyecto
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```text
+src/
+├── assets/         # Íconos, imágenes y recursos visuales.
+├── components/     # Componentes reutilizables (Tablas, Modales, Calendario).
+├── helpers/        # Funciones para peticiones a la API (apiUsuarios, apiMascotas, ect.).
+├── routes/         # Lógica de rutas protegidas (ProtectedRouteAdmin, etc.).
+├── styles/         # Archivos de estilos CSS por página/componente.
+├── pages/          # Vistas principales (HomePage, AdminPage).
+└── App.jsx         # Cerebro de la aplicación y rehidratación de sesión.

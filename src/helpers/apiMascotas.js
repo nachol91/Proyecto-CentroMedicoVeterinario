@@ -1,6 +1,5 @@
 const url = import.meta.env.VITE_API_URL; 
 
-
 export const mascotasGet = async (desde = 0) => {
     const limite = 20;
     const token = localStorage.getItem("token");
@@ -15,12 +14,14 @@ export const mascotasGet = async (desde = 0) => {
     });
 
     const data = await resp.json();
+    if (!resp.ok) {
+        throw new Error("Error al obtener las mascotas");
+    };
     return data;
   } catch (error) {
-    console.log(error);
     throw new Error("no se pueden obtener los datos!");
   }
-}
+};
 
 export const mascotasGetIdDueno = async (idDueno) => {
     const token = localStorage.getItem("token");
@@ -34,13 +35,14 @@ export const mascotasGetIdDueno = async (idDueno) => {
             }
         });
         const data = await resp.json();
+        if (!resp.ok) {
+            throw new Error("Error al obtener las mascotas del usuario");
+        };
         return data;
     } catch (error) {
-        console.error(error);
-        return { msg: "No se pudo conectar con el servidor" };
+        throw new Error("No se pudo conectar con el servidor");
     }
 };
-
 
 export const mascotaPost = async (datos) => {
     const token = localStorage.getItem("token");
@@ -55,13 +57,14 @@ export const mascotaPost = async (datos) => {
             }
         });
         const data = await resp.json();
+        if (!resp.ok) {
+            throw new Error("Error al crear la macota");
+        };
         return data;
     } catch (error) {
-        console.error(error);
-        return { msg: "No se conectó con la base de datos!" };
+        throw new Error("No se pudo conectar con el servidor");
     }
 };
-
 
 export const mascotaPut = async (id, datos) => {
     const token = localStorage.getItem("token");
@@ -76,13 +79,14 @@ export const mascotaPut = async (id, datos) => {
             }
         });
         const data = await resp.json();
+        if (!resp.ok) {
+            throw new Error("Error al modificar la mascota");
+        };
         return data;
-    } catch (error) {
-        console.error(error);
-        return { msg: "No se conectó con la base de datos!" };
+    } catch (error) {        
+        throw new Error("No se pudo conectar con el servidor");
     }
 };
-
 
 export const mascotaDelete = async (id) => {
     const token = localStorage.getItem("token");
@@ -96,13 +100,14 @@ export const mascotaDelete = async (id) => {
             }
         });
         const data = await resp.json();
+        if (!resp.ok) {
+            throw new Error("Error al eliminar la macota");
+        };
         return data;
     } catch (error) {
-        console.error(error);
-        return { msg: "No se conectó con la base de datos!" };
+        throw new Error("No se pudo conectar con el servidor");
     }
 };
-
 
 export const patchMascota = async (id) => {
     const token = localStorage.getItem("token");
@@ -116,9 +121,11 @@ export const patchMascota = async (id) => {
             }
         });
         const data = await resp.json();
+        if (!resp.ok) {
+            throw new Error("Error al Habilitar/Deshabilitar la mascota");
+        };
         return data;
     } catch (error) {
-        console.error(error);
-        return { msg: "No se conectó con la base de datos!" };
+        throw new Error("No se pudo conectar con el servidor");
     }
 };

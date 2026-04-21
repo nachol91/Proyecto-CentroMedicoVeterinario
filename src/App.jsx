@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation, BrowserRouter as Router, } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HeaderComponents from "./components/HeaderComponents";
 import FooterComponents from "./components/FooterComponents";
 import HomePage from "./pages/HomePage";
@@ -29,6 +29,23 @@ const AppLayout = () => {
   const [authUser, setAuthUser] = useState(false);
 
   const [authMedico, setAuthMedico] = useState(false);
+
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    if (token && usuario) {
+      // Si hay token y usuario, restauramos el estado según el nivel
+      if (usuario.nivel === "ADMIN") setAuthAdmin(true);
+      if (usuario.nivel === "USER") setAuthUser(true);
+      if (usuario.nivel === "MEDICO") setAuthMedico(true);
+    }
+    setCargando(false);
+  }, []);
+
+  
 
   function logInAdmin() {
     setAuthAdmin(true);

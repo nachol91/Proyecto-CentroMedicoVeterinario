@@ -11,12 +11,10 @@ export const authLogin = async (datos) =>{
         });
 
         const data = await resp.json();
-
+        
         return data;
         
     } catch (error) {
-        console.log(error);
-        return {msg: "no se pudo conectar con el backend"}
-        
+        throw new Error("No se pudo conectar con el servidor");       
     }
 }

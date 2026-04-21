@@ -15,10 +15,12 @@ export const getUsuarios = async (desde = 0) => {
     });
 
     const data = await resp.json();
+    if (!resp.ok) {
+      throw new Error('Error al obtener los Usuarios');
+    }
     return data;
   } catch (error) {
-    console.log(error);
-    throw new Error("no se pueden obtener los datos!");
+    throw new Error("No se pudo conectar con el servidor");
   }
 };
 
@@ -34,10 +36,12 @@ export const getUsuarioByID = async (id) => {
       },
     });
     const data = await resp.json();
+    if (!resp.ok) {
+      throw new Error('Error al obtener el Usuario');
+    }
     return data;
   } catch (error) {
-    console.log(error);
-    throw new Error("no se puede obtener el usuario solicitado");
+    throw new Error("No se pudo conectar con el servidor");
   }
 };
 
@@ -55,15 +59,12 @@ export const actualizarUsuario = async (id, datos) => {
     });
 
     const data = await resp.json();
-
     if (!resp.ok) {
-      throw new Error(data.msg || "Error al actualizar en la base de datos");
+      throw new Error("Error al actualizar el usuario");
     }
-
     return data;
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw new Error("No se pudo conectar con el servidor");
   }
 };
 
@@ -80,35 +81,40 @@ export const deleteUsuario = async (id) => {
     });
 
     const data = await resp.json();
+    if (!resp.ok) {
+      throw new Error('Error al Eliminar el Usuario');
+    }
     return data;
   } catch (error) {
-    console.error(error);
-    return { msg: "No se conectó con la base de datos!" };
+    throw new Error("No se pudo conectar con el servidor");
   }
 };
 
 export const postUsuario = async (datos) => {
   
   const token = localStorage.getItem("token");
-  
-  const resp = await fetch(url + "/" + "usuarios", {
-    method: "POST",
-    body: JSON.stringify(datos),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      "x-token": token,
+
+  try {
+    const resp = await fetch(url + "/" + "usuarios", {
+      method: "POST",
+      body: JSON.stringify(datos),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        "x-token": token,
+      }
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      throw new Error('Error al crear el Usuario');
     }
-  });
-
-  const data = await resp.json();
-
-  if (!resp.ok) {
-  throw new Error(data.message || 'El usuario ya se encuentra registrado en la base de datos');
-  }
-
-  return data;     
+    return data;  
     
-}
+  } catch (error) {
+    throw new Error("No se pudo conectar con el servidor");    
+  }    
+};
 
 export const patchUsuario = async (id) => {
   const token = localStorage.getItem("token");
@@ -123,10 +129,11 @@ export const patchUsuario = async (id) => {
     });
 
     const data = await resp.json();
+    if (!resp.ok) {
+      throw new Error('Error al Habilitar/Deshabilitar el Usuario');
+    }
     return data;    
   } catch (error) {
-    console.error(error);
-    return { msg: "no se conectó con la base de datos!"}
-    
+    throw new Error("No se pudo conectar con el servidor");    
   }
 }
