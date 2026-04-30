@@ -149,6 +149,12 @@ export default function CalendarioTurnos() {
   
   try {
     if (!nuevoTurno.mascota || !nuevoTurno.medico || !nuevoTurno.dueno) {
+      Swal.fire({
+        title: "Datos incompletos",
+        text: "Por favor, asegúrate de seleccionar una mascota y un veterinario.",
+        icon: "info",
+        confirmButtonColor: "#6f42c1",
+      });
       return;
     }
 
@@ -164,17 +170,18 @@ export default function CalendarioTurnos() {
       text: "El Turno se cargó correctamente",
       icon: "success",
       confirmButtonColor: "#6f42c1",
-    });;
+    });
+
     setShowModalCrear(false);
     await cargarTurnos(); 
 
   } catch (error) {
-    Swal.fire({
-      title: "Error",
-      text: "No se pudo conectar con el servidor",
-      icon: "error",
-      confirmButtonColor: "#d33",
-    });
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo conectar con el servidor",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
@@ -205,7 +212,7 @@ export default function CalendarioTurnos() {
       fecha: datosEditados.fecha,
       descripcion: datosEditados.descripcion,
       tipoDeEstudio: datosEditados.tipoDeEstudio,
-      medico: medicoId // Mandamos solo el ID
+      medico: medicoId
     };
 
     try {
@@ -375,7 +382,7 @@ export default function CalendarioTurnos() {
           right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}/>
 
-      {/* Modal de Detalle */}
+      
       <Modal show={showModal} onHide={handleClose} size="lg">
         <Modal.Header closeButton className="bg-light">
           <Modal.Title>
@@ -500,14 +507,13 @@ export default function CalendarioTurnos() {
         </Modal.Footer>
       </Modal>
 
-      {/* MODAL PARA CREAR UN NUEVO TURNO */}
       <Modal show={showModalCrear} onHide={() => setShowModalCrear(false)} backdrop="static">
         <Modal.Header closeButton style={{ backgroundColor: 'var(--light-bg)' }}>
           <Modal.Title>Agendar Nuevo Turno</Modal.Title>
         </Modal.Header>
         <form onSubmit={handleCrearTurno}>
           <Modal.Body>
-            {/* Campo de Fecha */}
+            
             <div className="mb-3">
               <label className="form-label fw-bold">Fecha y Hora</label>
               <input 
@@ -517,7 +523,6 @@ export default function CalendarioTurnos() {
                 readOnly/>
             </div>
 
-            {/* Tipo de Estudio */}
             <div className="mb-3">
               <label className="form-label fw-bold">Tipo de Estudio</label>
               <select className="form-select" value={nuevoTurno.tipoDeEstudio} onChange={(e) => setNuevoTurno({...nuevoTurno, tipoDeEstudio: e.target.value})}required>
@@ -529,18 +534,17 @@ export default function CalendarioTurnos() {
               </select>
             </div>
 
-            {/* Selección de Mascota */}
             <div className="mb-3">
               <label className="form-label fw-bold">Mascota (Paciente)</label>
                 <Select options={opcionesMascotas} required placeholder="Buscar mascota, dueño o email..." noOptionsMessage={() => "No se encontraron resultados"}
                   isClearable
                   onChange={(selected) => {
                     if (selected) {
-                      const m = selected.datosCompletos;
+                      const mascotaElegida = selected.datosCompletos;
                       setNuevoTurno({
                         ...nuevoTurno,
-                        mascota: m._id,
-                        dueno: m.dueno?._id || m.dueno
+                        mascota: mascotaElegida._id,
+                        dueno: mascotaElegida.dueno?._id || mascotaElegida.dueno
                       });
                     } else {
                       setNuevoTurno({ ...nuevoTurno, mascota: '', dueno: '' });
@@ -550,7 +554,6 @@ export default function CalendarioTurnos() {
                 />
             </div>
 
-            {/* Selección de Médico */}
             <div className="mb-3">
               <label className="form-label fw-bold">Veterinario a Cargo</label>
               <select className="form-select" required onChange={(e) => setNuevoTurno({...nuevoTurno, medico: e.target.value})}>          
@@ -561,7 +564,6 @@ export default function CalendarioTurnos() {
               </select>
             </div>
 
-            {/* Descripción del Motivo */}
             <div className="mb-3">
               <label className="form-label fw-bold">Descripción / Síntomas</label>
               <textarea 
@@ -577,7 +579,7 @@ export default function CalendarioTurnos() {
             <Button variant="secondary" onClick={() => setShowModalCrear(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="btn-violeta">
+            <Button type="submit" className="btn-violeta" disabled={!nuevoTurno.mascota || !nuevoTurno.medico || !nuevoTurno.dueno}>
               Confirmar Cita
             </Button>
           </Modal.Footer>

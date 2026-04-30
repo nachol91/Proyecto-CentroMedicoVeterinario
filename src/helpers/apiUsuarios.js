@@ -2,11 +2,15 @@ const url = import.meta.env.VITE_API_URL;
 
 export const getUsuarios = async (desde = 0) => {
   const limite = 20;
-
   const token = localStorage.getItem("token");
 
+  const parametros = new URLSearchParams({
+        limite: limite.toString(),
+        desde: desde.toString()
+    });
+
   try {
-    const resp = await fetch(url + "/" + "usuarios" + "/" + "?limite" + limite + "&desde" + desde, {
+    const resp = await fetch(`${url}/usuarios?${parametros}`, {
       method: "GET",
       headers: {
         "content-type": "application/json; charset=UTF-8",

@@ -1,13 +1,14 @@
 import { Navigate } from "react-router-dom";
+import { leerUsuarioGuardado } from "../helpers/auth";
 
 export default function ProtectedRouteMedico({ children, authMedico }) {
 
   const token = localStorage.getItem("token");
-  const usuario = JSON.parse(localStorage.getItem("usuario")); 
+  const usuario = leerUsuarioGuardado(); 
   
-  const esAdminPersistido = token && usuario?.nivel === "MEDICO";
+  const esMedicoPermitido = token && usuario?.nivel === "MEDICO";
 
-  if (authMedico || esAdminPersistido) {
+  if (authMedico || esMedicoPermitido) {
     return children;
   } else {
     return <Navigate to="/" />;

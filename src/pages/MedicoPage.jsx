@@ -3,7 +3,6 @@ import { Button, Card, Form, Modal, Spinner, Row, Col } from "react-bootstrap";
 
 import Swal from 'sweetalert2';
 
-//iconos y assets
 import inicio from "../assets/icons/cucha.png";
 import pacientes from "../assets/icons/nosotros.png";
 import turnos from "../assets/icons/calendario.png";
@@ -13,19 +12,18 @@ import recetaCard from "../assets/img/recetas.avif";
 import turnosCard from "../assets/img/turnos.jpg";
 import pacientesCard from "../assets/img/pacientesCard.jpeg";
 
-// Componentes y Helpers
 import TablaUsuarios from "../components/TablaUsuariosComponents";
 import TablaMascotas from "../components/TablaMascotas";
 import CalendarioTurnos from "../components/CalendarioTurnos";
 import { postUsuario, actualizarUsuario, patchUsuario, getUsuarios, deleteUsuario } from "../helpers/apiUsuarios";
 import { mascotasGetIdDueno, mascotaPost, mascotaDelete, mascotaPut, patchMascota } from "../helpers/apiMascotas";
+import { leerUsuarioGuardado } from "../helpers/auth";
 
 import "../styles/MedicoPage.css";
 
 
 export default function AdminPage() {
 
-  // hooks y funciones de usuarios//
 
   const [activeTab, setActiveTab] = useState("inicio");
   const [usuarios, setUsuarios] = useState([]);  
@@ -40,8 +38,6 @@ export default function AdminPage() {
     setShowEdit(false);
     setUsuarioAEditar();
   };
-  
-  //hooks para el buscador y el loading
 
   const [busqueda, setBusqueda] = useState("");
   const [usuariosFiltrados, setUsuariosFiltrados] = useState([]);
@@ -233,8 +229,6 @@ export default function AdminPage() {
       }
   };
 
-  //hooks y funciones de mascotas//
-
   const [mascotas, setMascotas] = useState([]);
   const [showModalMascotas, setShowModalMascotas] = useState(false);
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState();
@@ -245,7 +239,7 @@ export default function AdminPage() {
   const [nombreMascotaHistoria, setNombreMascotaHistoria] = useState("");
 
   const [showCrearMascota, setShowCrearMascota] = useState(false);
-  const medicoLogueado = JSON.parse(localStorage.getItem("usuario"));
+  const medicoLogueado = leerUsuarioGuardado();
 
   const [showEditMascota, setShowEditMascota] = useState(false);
   const [mascotaAEditar, setMascotaAEditar] = useState();
@@ -271,7 +265,7 @@ export default function AdminPage() {
         peso: Number(peso),
         historiaClinica: historiaClinica || "",
         dueno: usuarioSeleccionado._id, 
-        medicoQueCrea: medicoLogueado._id 
+        medicoQueCrea: medicoLogueado?._id 
     };
 
     try {
@@ -407,6 +401,7 @@ export default function AdminPage() {
 
   return (
     <main className="admin-page">      
+      
       <aside className="aside-main">
         <nav className="aside-nav">
           <button
@@ -489,12 +484,11 @@ export default function AdminPage() {
         {activeTab === "recetas" && <h1>Gestión de Recetas</h1>}
       </section>
       
-      {/* //modales usuarios// */}
     
       <Modal className="crear-usuario" show={show} onHide={handleClose}>
         
         <Modal.Header closeButton>
-          <Modal.Title>{activeTab === "medicos" ? "Registrar Nuevo Médico" : "Registrar Nuevo Usuario"}</Modal.Title>
+          <Modal.Title>"Registrar Nuevo Usuario"</Modal.Title>
         </Modal.Header>
         
         <Modal.Body>
@@ -504,42 +498,55 @@ export default function AdminPage() {
               <Col xs={12} md={6}>
                 <Form.Group className="mb-3" controlId="nombre">
                   <Form.Label>Nombre</Form.Label>
-                  <Form.Control type="text" name='nombre' placeholder="ingresa el nombre" autoFocus required/>
+                  <Form.Control type="text" name='nombre' placeholder="ej: Juan" autoFocus minLength={3} maxLength={15} required/>
+                  <Form.Text className="text-muted">
+                    Máximo 15 caracteres.
+                  </Form.Text>
                 </Form.Group>
               </Col>
 
               <Col xs={12} md={6}>
                 <Form.Group className="mb-3" controlId="apellido">
                   <Form.Label>Apellido</Form.Label>
-                  <Form.Control type="text" name='apellido' placeholder="ingresa el apellido" required/>
+                  <Form.Control type="text" name='apellido' placeholder="ej: Lopez" minLength={3} maxLength={15} required/>
+                  <Form.Text className="text-muted">
+                    Máximo 15 caracteres.
+                  </Form.Text>
                 </Form.Group>
               </Col>   
 
               <Col xs={12}>    
                 <Form.Group className="mb-3 full-width" controlId="correo">
                   <Form.Label>Correo</Form.Label>
-                  <Form.Control type="email" name='correo' placeholder="ingresa el correo" required/>
+                  <Form.Control type="email" name='correo' placeholder="ej: ejemplo@gmail.com" maxLength={35} required/>
                 </Form.Group>
               </Col> 
 
               <Col xs={12}>
                 <Form.Group className="mb-3 full-width" controlId="telefono">
                   <Form.Label>Telefono</Form.Label>
-                  <Form.Control type="tel" name='telefono'rows={3} placeholder="ingresa el telefono" required/>
+                  <Form.Control type="tel" name='telefono'rows={3} pattern="[0-9]*" placeholder="ingrese el telefono(solo numeros)" maxLength={15} required/>
                 </Form.Group>
               </Col>  
               
               <Col xs={12}>            
                 <Form.Group className="mb-3 full-width" controlId="password">
                   <Form.Label>Contraseña</Form.Label>
-                  <Form.Control type="password" name='password' placeholder='ingresar contraseña'rows={3} required/>
+                  <Form.Control type="password" name='password' autoComplete="new-password" placeholder='ingresar contraseña' rows={3} minLength={8} maxLength={20} required/>
+                  <Form.Text className="text-muted">
+                    Mínimo 8 caracteres.
+                  </Form.Text>
                 </Form.Group>
               </Col>
 
               <Col xs={12}>
                 <Form.Group className="mb-3 full-width" controlId="confirmarPassword">
                   <Form.Label>Confirmar contraseña</Form.Label>
-                  <Form.Control type="password" name='confirmarPassword' placeholder='Confirma contraseña ingresada' rows={3} required/>
+                  <Form.Control type="password" name='confirmarPassword' autoComplete="new-password" placeholder='Confirmar contraseña' rows={3} 
+                    minLength={8} maxLength={20} required/>
+                  <Form.Text className="text-muted">
+                    Mínimo 8 caracteres.
+                  </Form.Text>
                 </Form.Group>
               </Col>
 
@@ -613,7 +620,6 @@ export default function AdminPage() {
 
       </Modal>
 
-      {/* modales mascotas */}
 
       <Modal className="modal-principal-mascota" show={showModalMascotas} onHide={() => setShowModalMascotas(false)} size="xl">
         <Modal.Header closeButton>
@@ -657,7 +663,7 @@ export default function AdminPage() {
           <Form id="form-nueva-mascota" onSubmit={handleCrearMascota}>
             <Form.Group className="mb-3" controlId="nombre">
               <Form.Label>Nombre</Form.Label>
-              <Form.Control type="text" name="nombre" placeholder="Nombre de la mascota" required autoFocus />
+              <Form.Control type="text" name="nombre" placeholder="Nombre de la mascota" maxLength={15} required autoFocus />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="especie">
@@ -671,12 +677,17 @@ export default function AdminPage() {
 
             <Form.Group className="mb-3" controlId="raza">
               <Form.Label>Raza</Form.Label>
-              <Form.Control type="text" name="raza" placeholder="Ej: Mestizo, Labrador..." />
+              <Form.Control type="text" name="raza" placeholder="Ej: Mestizo, Labrador..." maxLength={15} required />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="edad">
               <Form.Label>Edad</Form.Label>
-              <Form.Control type="number" name="edad" placeholder="Edad en años" required />
+              <Form.Control type="number" name="edad" placeholder="Edad en años" min="1" max="99" 
+                onInput={(e) => {
+                  if (e.target.value.length > 2) {
+                    e.target.value = e.target.value.slice(0, 2);
+                  }
+                }} required />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="sexo">
@@ -689,12 +700,17 @@ export default function AdminPage() {
 
             <Form.Group className="mb-3" controlId="peso">
               <Form.Label>Peso</Form.Label>
-              <Form.Control type="number" name="peso" step="0.001" placeholder="Peso en kg" required />
+              <Form.Control type="number" name="peso" step="0.005" placeholder="Peso en kg(Ej: 10.5)" min="0" max="500"
+                onInput={(e) => {
+                  if (e.target.value.length > 6) {
+                    e.target.value = e.target.value.slice(0, 6);
+                  }
+                }} required />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="historiaClinica">
               <Form.Label>Historia Clínica</Form.Label>
-              <Form.Control as="textarea" name="historiaClinica" rows={3} placeholder="Historia Clínica" />
+              <Form.Control as="textarea" name="historiaClinica" rows={3} placeholder="Historia Clínica" maxLength={500} required />
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -723,12 +739,12 @@ export default function AdminPage() {
             
             <Form.Group className="mb-3" controlId="peso">
               <Form.Label>Peso Actual (Kg)</Form.Label>
-              <Form.Control type="number" name="peso" step="0.001" defaultValue={mascotaAEditar?.peso} required/>
+              <Form.Control type="number" name="peso" step="0.005" defaultValue={mascotaAEditar?.peso} required/>
             </Form.Group>
             
             <Form.Group className="mb-3" controlId="edad">
               <Form.Label>Edad (Años)</Form.Label>
-              <Form.Control type="number" name="edad" defaultValue={mascotaAEditar?.edad} required />
+              <Form.Control type="number" name="edad" defaultValue={mascotaAEditar?.edad} min="1" max="99" required />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="estado">

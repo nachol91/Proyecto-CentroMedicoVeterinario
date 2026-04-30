@@ -21,41 +21,49 @@ export default function HomePage({ logInAdmin, logInUser, logInMedico }) {
   const correo = e.target.email.value;
   const password = e.target.password.value;
 
-  const data = await authLogin({ correo, password });
+  try{
+    const data = await authLogin({ correo, password });
  
-  if (!data.token) {
+    if (!data.token) {
+      Swal.fire({
+        title: "Error de ingreso",
+        text: "Credenciales incorrectas, comuniquese con el Administrador",
+        icon: "error",
+        confirmButtonColor: "#6f42c1",
+      });
+      return;
+    }
+  
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("usuario", JSON.stringify(data.usuario));
+    
+    if (data.usuario.nivel === "ADMIN") {
+      logInAdmin();
+      navigate("/admin");
+    } else if (data.usuario.nivel === "USER") {
+      logInUser();
+      navigate("/user");
+    } else if (data.usuario.nivel === "MEDICO") {
+      logInMedico();
+      navigate("/medico");
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "No tiene acceso a la página",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });    
+    }
+  }catch (error){
     Swal.fire({
-      title: "Error de ingreso",
-      text: "Credenciales incorrectas, comuniquese con el Administrador",
+      title: "Error de conexión",
+      text: "No se pudo conectar con el servidor.Intentá más tarde.",
       icon: "error",
       confirmButtonColor: "#6f42c1",
     });
+  }finally{
     setCargando(false);
-    return;
-  }
- 
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("usuario", JSON.stringify(data.usuario));
-  
-  if (data.usuario.nivel === "ADMIN") {
-    logInAdmin();
-    navigate("/admin");
-  } else if (data.usuario.nivel === "USER") {
-    logInUser();
-    navigate("/user");
-  } else if (data.usuario.nivel === "MEDICO") {
-    logInMedico();
-    navigate("/medico");
-  } else {
-    Swal.fire({
-      title: "Error",
-      text: "No tiene acceso a la página",
-      icon: "error",
-      confirmButtonColor: "#d33",
-    });
-    setCargando(false);
-  }
-  };
+  }};
 
   return (
     <main className="main-login">

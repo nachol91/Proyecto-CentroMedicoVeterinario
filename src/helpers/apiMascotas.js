@@ -4,8 +4,13 @@ export const mascotasGet = async (desde = 0) => {
     const limite = 20;
     const token = localStorage.getItem("token");
 
+    const parametros = new URLSearchParams({
+        limite: limite.toString(),
+        desde: desde.toString()
+    });
+
     try {
-    const resp = await fetch(url + "/" + "mascotas" + "/" + "?limite" + limite + "&desde" + desde, {
+    const resp = await fetch(`${url}/mascotas?${parametros}`, {
       method: "GET",
       headers: {
         "content-type": "application/json; charset=UTF-8",
@@ -129,3 +134,22 @@ export const patchMascota = async (id) => {
         throw new Error("No se pudo conectar con el servidor");
     }
 };
+
+export const mascotasGetMisMascotas = async () => {
+    const token = localStorage.getItem("token");
+    try {
+        const resp = await fetch(url + "/" + "mascotas" + "/" + "mis-mascotas", {
+            method: 'GET',
+            headers: {
+                'Content-type': "application/json; charset=UTF-8",
+                'x-token': token,
+            }
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error("Error al obtener tus mascotas");
+        return data;
+    } catch (error) {
+        throw new Error("No se pudo conectar con el servidor");
+    }
+};
+

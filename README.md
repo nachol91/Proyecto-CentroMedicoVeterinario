@@ -7,7 +7,7 @@ Este es el frontend de **CeDiVe**, una aplicación web integral diseñada para l
 - **Gestión de Usuarios y Médicos:** Panel administrativo para crear, editar y dar de baja usuarios con diferentes niveles de acceso (ADMIN, MEDICO, USER).
 - **Sistema de Pacientes:** Registro detallado de mascotas vinculado a sus dueños, incluyendo especie, raza, peso e historial clínico.
 - **Autenticación y Seguridad:** - Rutas protegidas mediante verificaciones síncronas y asíncronas.
-  - Manejo de sesiones volátiles con `sessionStorage`.
+  - Manejo de sesiones volátiles con `localStorage`.
 - **Interfaz Administrativa:** Panel lateral (Sidebar) con navegación fluida para gestionar turnos, y bases de datos de pacientes.
 - **Validaciones de UI:** Manejo de estados de carga (Spinners) y validaciones de formularios en tiempo real.
 

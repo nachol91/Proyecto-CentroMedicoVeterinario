@@ -4,8 +4,13 @@ export const getTurnos = async (desde = 0) => {
   const limite = 50; 
   const token = localStorage.getItem("token");
 
+  const parametros = new URLSearchParams({
+        limite: limite.toString(),
+        desde: desde.toString()
+    });
+
   try {
-    const resp = await fetch(url + "/" + "turnos" + "/" + "?limite" + limite + "&desde" + desde, {
+    const resp = await fetch(`${url}/turnos?${parametros}`, {
       method: "GET",
       headers: {
         "content-type": "application/json; charset=UTF-8",
@@ -136,4 +141,22 @@ export const deleteTurno = async (id) => {
   } catch (error) {
     throw new Error("No se pudo conectar con el servidor");
   }
+};
+
+export const getMisTurnos = async () => {
+    const token = localStorage.getItem("token");
+    try {
+        const resp = await fetch(url + "/" + "turnos" + "/" + "mis-turnos", {
+            method: 'GET',
+            headers: {
+                'Content-type': "application/json; charset=UTF-8",
+                'x-token': token,
+            }
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error("Error al obtener tus turnos");
+        return data;
+    } catch (error) {
+        throw new Error("No se pudo conectar con el servidor");
+    }
 };
