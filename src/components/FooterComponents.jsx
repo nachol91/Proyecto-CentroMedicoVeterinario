@@ -4,7 +4,7 @@ import facebookIcon from "../assets/icons/facebook.png";
 import instagramIcon from "../assets/icons/instagram.png";
 
 export default function FooterComponents() {
-  const currentYear = new Date().getFullYear();
+  const anoActual = new Date().getFullYear();
 
   return (
     <footer className="footer">
@@ -50,7 +50,7 @@ export default function FooterComponents() {
 
       <div className="footer-divider" />
 
-      <p className="footer-copy">&copy; {currentYear} CeDiVE</p>
+      <p className="footer-copy">&copy; {anoActual} CeDiVE</p>
     </footer>
   );
 }

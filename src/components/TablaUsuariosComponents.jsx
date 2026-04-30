@@ -27,7 +27,7 @@ export default function TablaUsuariosComponents({ abrirEditor, usuarios, elimina
                                 <td>{usuario.apellido}</td>
                                 <td>{usuario.correo}</td>
                                 <td>{usuario.telefono}</td>
-                                <td>{usuario.estado === true ? (<p>Habilitado</p>) : (<p>Deshabilitado</p>)}</td>
+                                <td>{usuario.estado ? "Habilitado" : "Deshabilitado"}</td>
                                 <td>
                                     {new Date(usuario.fechaRegistro).toLocaleString('es-AR', {
                                         day: '2-digit',

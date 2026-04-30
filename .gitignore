@@ -24,7 +24,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.vite\deps
+.vite/
+dist/
+
+
 
 # Scraps local notes
 .scraps/

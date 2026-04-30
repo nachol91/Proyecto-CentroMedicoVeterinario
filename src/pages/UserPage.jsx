@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Spinner, Card, Table, Button } from "react-bootstrap";
 
-// Assets (Tus iconos y fotos confirmados)
 import inicio from "../assets/icons/cucha.png";
 import pacientes from "../assets/icons/nosotros.png";
 import turnosIcon from "../assets/icons/calendario.png";
@@ -11,11 +10,11 @@ import turnosCard from "../assets/img/turnos.jpg"
 
 import Swal from 'sweetalert2';
 
-// Componentes y Helpers (Usando el nombre EXACTO de tu export)
 import TablaMascotasUsuario from "../components/TablaMascotasUsuario";
 import { getUsuarioByID } from "../helpers/apiUsuarios";
-import { mascotasGetIdDueno } from "../helpers/apiMascotas"; 
-import { getTurnosByIdDueno } from "../helpers/apiTurnos";
+import { mascotasGetMisMascotas } from "../helpers/apiMascotas"; 
+import { getMisTurnos } from "../helpers/apiTurnos";
+import { leerUsuarioGuardado } from "../helpers/auth";
 
 import "../styles/AdminPage.css";
 
@@ -27,18 +26,16 @@ export default function UserPage() {
   const [turnos, setTurnos] = useState([]);
 
   const obtenerUsuario = async ()=>{
-    const usuarioConectado = JSON.parse(localStorage.getItem("usuario"))
-    const data = await getUsuarioByID(usuarioConectado._id)
+    const usuarioConectado = leerUsuarioGuardado();
+    const data = await getUsuarioByID(usuarioConectado._id);
 
     setUsuarioData(data.usuario || data);    
   };
 
   const obtenerMascotas = async ()=>{
     setCargando(true);
-    const usuarioConectado = JSON.parse(localStorage.getItem("usuario"));
-    const idDueno = usuarioConectado._id;
     try {
-      const data = await mascotasGetIdDueno(idDueno);
+      const data = await mascotasGetMisMascotas();
       setMascotas(data.mascotas || []);
     } catch (error) {
       Swal.fire({
@@ -55,8 +52,7 @@ export default function UserPage() {
  const obtenerTurnos = async () => {
     setCargando(true);
     try {
-      const usuarioConectado = JSON.parse(localStorage.getItem("usuario"));
-      const data = await getTurnosByIdDueno(usuarioConectado._id);        
+      const data = await getMisTurnos();       
       setTurnos(data.turnos || []); 
     } catch (error) {
       Swal.fire({

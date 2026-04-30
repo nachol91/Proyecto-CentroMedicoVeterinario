@@ -4,12 +4,14 @@ import HeaderComponents from "./components/HeaderComponents";
 import FooterComponents from "./components/FooterComponents";
 import HomePage from "./pages/HomePage";
 import ErrorPage from "./pages/ErrorPage";
-import ProtectedRouteAdmin from "./routes/ProtectedRouteAdmin";
-import ProtectedRouteUser from "./routes/ProtectedRouteUser";
-import ProtectedRouteMedico from "./routes/ProtectedRouteMedico";
 import MedicoPage from "./pages/MedicoPage";
 import UserPage from "./pages/UserPage";
 import AdminPage from "./pages/AdminPage";
+import ProtectedRouteAdmin from "./routes/ProtectedRouteAdmin";
+import ProtectedRouteUser from "./routes/ProtectedRouteUser";
+import ProtectedRouteMedico from "./routes/ProtectedRouteMedico";
+import { leerUsuarioGuardado } from "./helpers/auth";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/App.css";
 
@@ -34,10 +36,9 @@ const AppLayout = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const usuario = leerUsuarioGuardado();
 
     if (token && usuario) {
-      // Si hay token y usuario, restauramos el estado según el nivel
       if (usuario.nivel === "ADMIN") setAuthAdmin(true);
       if (usuario.nivel === "USER") setAuthUser(true);
       if (usuario.nivel === "MEDICO") setAuthMedico(true);

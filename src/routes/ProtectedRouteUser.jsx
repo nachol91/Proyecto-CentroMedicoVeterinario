@@ -1,13 +1,14 @@
-import { Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom";
+import { leerUsuarioGuardado } from "../helpers/auth";
 
 export default function ProtectedRouteUser({children, authUser}) {
 
   const token = localStorage.getItem("token");
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const usuario = leerUsuarioGuardado();
 
-  const esAdminPersistido = token && usuario?.nivel === "USER";  
+  const esUserPermitido = token && usuario?.nivel === "USER";  
   
-  if(authUser || esAdminPersistido){
+  if(authUser || esUserPermitido){
     return children
   }else{
     return(
