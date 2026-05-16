@@ -8,6 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import Swal from 'sweetalert2';
 
 import { actualizarUsuario } from '../helpers/apiUsuarios';
+import { leerUsuarioGuardado } from "../helpers/auth";
 
 import logo from "../assets/img/logo-sin-BG.png";
 import avatar from "../assets/icons/icono-avatar.png";
@@ -17,9 +18,9 @@ export default function HeaderComponents() {
   
   const navigate = useNavigate();
   
-  const usuarioLocal = localStorage.getItem("usuario");
+  const usuarioLocal = leerUsuarioGuardado();
   
-  const userData = (usuarioLocal && usuarioLocal !== "undefined") ? JSON.parse(usuarioLocal) : null;
+  const userData = (usuarioLocal && usuarioLocal !== "undefined") ? usuarioLocal : null;
   
   const idUsuario = userData?._id || userData?.uid || userData?.id;
   const { nombre, apellido, correo, telefono, img } = userData || {};
@@ -156,23 +157,23 @@ export default function HeaderComponents() {
           <Form id="form-mis-datos" onSubmit={handleSave}>
             <Form.Group className="mb-3" controlId="correo">
               <Form.Label>Correo</Form.Label>
-              <Form.Control type="email" name='correo' autoComplete="username" defaultValue={correo} autoFocus/>
+              <Form.Control type="email" name='correo' autoComplete="username" defaultValue={correo} autoFocus maxLength={35}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="telefono">
               <Form.Label>Telefono</Form.Label>
-              <Form.Control type="tel" name='telefono' defaultValue={telefono} rows={3} />
+              <Form.Control type="tel" name='telefono' defaultValue={telefono} rows={3} maxLength={15} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Contraseña actual(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='passwordActual' autoComplete="current-password" placeholder='ingresa tu contraseña actual'/>
+              <Form.Control type="password" name='passwordActual' autoComplete="current-password" placeholder='ingresa tu contraseña actual' minLength={8} maxLength={20}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Nueva contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='nuevoPassword' autoComplete="new-password" placeholder='ingrese la nueva contraseña (min 8 caracteres)'/>
+              <Form.Control type="password" name='nuevoPassword' autoComplete="new-password" placeholder='ingrese la nueva contraseña (min 8 caracteres)' minLength={8} maxLength={20}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Confirmar contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='confirmarPassword' autoComplete="new-password" placeholder='repita la contraseña'/>
+              <Form.Control type="password" name='confirmarPassword' autoComplete="new-password" placeholder='repita la contraseña' minLength={8} maxLength={20}/>
             </Form.Group>            
           </Form>
         </Modal.Body>
