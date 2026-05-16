@@ -566,7 +566,7 @@ export default function AdminPage() {
               <Col xs={12}>
                 <Form.Group className="mb-3 full-width" controlId="telefono">
                   <Form.Label>Telefono</Form.Label>
-                  <Form.Control type="tel" name='telefono'rows={3} pattern="[0-9]*" placeholder="ingresa el telefono(solo numeros)" maxLength={15} required/>
+                  <Form.Control type="tel" name='telefono'rows={3} pattern="[0-9]*" placeholder="ingresa el telefono(solo numeros)" minLength={7} maxLength={15} required/>
                 </Form.Group>
               </Col>  
               
@@ -622,11 +622,11 @@ export default function AdminPage() {
           <Form id="form-editar-usuario" onSubmit={handleUpdate}>
             <Form.Group className="mb-3" controlId="correo">
               <Form.Label>correo</Form.Label>
-              <Form.Control type="email" name='correo' defaultValue={usuarioAEditar?.correo} autoFocus/>
+              <Form.Control type="email" name='correo' defaultValue={usuarioAEditar?.correo} maxLength={35} autoFocus/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="telefono">
               <Form.Label>Telefono</Form.Label>
-              <Form.Control type="tel" name='telefono' defaultValue={usuarioAEditar?.telefono} rows={3} />
+              <Form.Control type="tel" name='telefono' defaultValue={usuarioAEditar?.telefono} rows={3} pattern="[0-9]*" placeholder="ingresa el telefono(solo numeros)" minLength={7} maxLength={15} />
             </Form.Group>
             <Form.Group>
               <Form.Label>Estado</Form.Label>
@@ -637,11 +637,11 @@ export default function AdminPage() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Nueva contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='nuevoPassword' placeholder='ingrese la nueva contraseña (min 8 caracteres)'/>
+              <Form.Control type="password" name='nuevoPassword' placeholder='ingrese la nueva contraseña (min 8 caracteres)' minLength={8} maxLength={20}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Confirmar contraseña(Dejar en blanco si no se quiere modificar)</Form.Label>
-              <Form.Control type="password" name='confirmarPassword' placeholder='repita la contraseña'/>
+              <Form.Control type="password" name='confirmarPassword' placeholder='repita la contraseña' minLength={8} maxLength={20}/>
             </Form.Group>            
           </Form>
         </Modal.Body>
@@ -780,7 +780,7 @@ export default function AdminPage() {
             
             <Form.Group className="mb-3" controlId="peso">
               <Form.Label>Peso Actual (Kg)</Form.Label>
-              <Form.Control type="number" name="peso" step="0.005" defaultValue={mascotaAEditar?.peso} required/>
+              <Form.Control type="number" name="peso" step="0.005" defaultValue={mascotaAEditar?.peso} min="0" max="500" required/>
             </Form.Group>
             
             <Form.Group className="mb-3" controlId="edad">

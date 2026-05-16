@@ -78,10 +78,10 @@ export default function HomePage({ logInAdmin, logInUser, logInMedico }) {
       <div className="form-login">
         <Form onSubmit={logPageForm}>
           <Form.Group className="mb-3" controlId="email">
-            <Form.Control type="email" placeholder="Email" autoComplete="username" required disabled={cargando} />
+            <Form.Control type="email" placeholder="Email" autoComplete="username" maxLength={35} required disabled={cargando} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="password">
-            <Form.Control type="password" placeholder="Contraseña" required autoComplete="current-password" disabled={cargando}/>
+            <Form.Control type="password" placeholder="Contraseña" required autoComplete="current-password" minLength={8} maxLength={20} disabled={cargando}/>
           </Form.Group>
           <Button className="btn-violeta" type="submit" disabled={cargando}>
             {cargando ? (

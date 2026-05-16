@@ -457,12 +457,8 @@ export default function CalendarioTurnos() {
                 <div className="p-3 bg-light rounded border mt-3">
                   <strong>Descripción:</strong>
                   {editando ? (
-                    <textarea 
-                      className="form-control mt-2" 
-                      rows="3" 
-                      value={datosEditados.descripcion} 
-                      onChange={(e) => setDatosEditados({...datosEditados, descripcion: e.target.value})}
-                    />
+                    <textarea className="form-control mt-2" rows="3" value={datosEditados.descripcion} 
+                      onChange={(e) => setDatosEditados({...datosEditados, descripcion: e.target.value})} maxLength={300}/>
                   ) : (
                     <p className="mb-0 mt-2">{turnoSeleccionado.descripcion}</p>
                   )}
@@ -566,11 +562,7 @@ export default function CalendarioTurnos() {
 
             <div className="mb-3">
               <label className="form-label fw-bold">Descripción / Síntomas</label>
-              <textarea 
-                className="form-control" 
-                rows="3"
-                placeholder="Indique el motivo del turno..."
-                required
+              <textarea className="form-control" rows="3" placeholder="Indique el motivo del turno..." maxLength={300} required
                 onChange={(e) => setNuevoTurno({...nuevoTurno, descripcion: e.target.value})}
               ></textarea>
             </div>
