@@ -10,6 +10,7 @@ import turnosCard from "../assets/img/turnos.jpg"
 
 import Swal from 'sweetalert2';
 
+
 import TablaMascotasUsuario from "../components/TablaMascotasUsuario";
 import { getUsuarioByID } from "../helpers/apiUsuarios";
 import { mascotasGetMisMascotas } from "../helpers/apiMascotas"; 
@@ -65,6 +66,7 @@ export default function UserPage() {
         setCargando(false);
     }
   };
+
 
  useEffect(() => {    
     obtenerUsuario();
