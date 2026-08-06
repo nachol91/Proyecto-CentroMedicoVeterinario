@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Card, Form, Modal, Spinner, Row, Col } from "react-bootstrap";
+import { Button, Card, Form, Modal, Spinner, Row, Col, Table } from "react-bootstrap";
 
 import Swal from 'sweetalert2';
 
@@ -12,14 +12,17 @@ import recetaCard from "../assets/img/recetas.avif";
 import turnosCard from "../assets/img/turnos.jpg";
 import pacientesCard from "../assets/img/pacientesCard.jpeg";
 
+import RecetasComponent from "../components/RecetasComponent";
 import TablaUsuarios from "../components/TablaUsuariosComponents";
 import TablaMascotas from "../components/TablaMascotas";
 import CalendarioTurnos from "../components/CalendarioTurnos";
 import { postUsuario, actualizarUsuario, patchUsuario, getUsuarios, deleteUsuario } from "../helpers/apiUsuarios";
 import { mascotasGetIdDueno, mascotaPost, mascotaDelete, mascotaPut, patchMascota } from "../helpers/apiMascotas";
 import { leerUsuarioGuardado } from "../helpers/auth";
+import { recetaGetID } from "../helpers/apiRecetas";
 
 import "../styles/MedicoPage.css";
+
 
 
 export default function AdminPage() {
@@ -244,6 +247,11 @@ export default function AdminPage() {
   const [showEditMascota, setShowEditMascota] = useState(false);
   const [mascotaAEditar, setMascotaAEditar] = useState();
 
+  const [showModalRecetas, setShowModalRecetas] = useState(false);
+  const [recetasMascota, setRecetasMascota] = useState([]);
+  const [nombreMascotaReceta, setNombreMascotaReceta] = useState("");
+  const [loadingRecetas, setLoadingRecetas] = useState(false);
+
 
   const handleCrearMascota = async (e) => {
     e.preventDefault();
@@ -398,6 +406,23 @@ export default function AdminPage() {
     };
   };
 
+  const handleVerRecetas = async (mascota) => {
+    setNombreMascotaReceta(mascota.nombre);
+    setShowModalRecetas(true);
+    setLoadingRecetas(true);
+  
+      try {
+        const res = await recetaGetID(mascota._id);
+        // Asigna el arreglo de recetas según lo devuelva tu backend (res.recetas o res)
+        setRecetasMascota(res.recetas || res);
+      } catch (error) {
+        console.error(error);
+        setRecetasMascota([]);
+      } finally {
+        setLoadingRecetas(false);
+      }
+  };
+
 
   return (
     <main className="admin-page">      
@@ -481,7 +506,7 @@ export default function AdminPage() {
           </div>
         )}               
         {activeTab === "turnos" && <CalendarioTurnos />}
-        {activeTab === "recetas" && <h1>Gestión de Recetas</h1>}
+        {activeTab === "recetas" && <RecetasComponent/>}
       </section>
       
     
@@ -626,7 +651,7 @@ export default function AdminPage() {
           <Modal.Title>Mascotas de: {usuarioSeleccionado?.nombre} {usuarioSeleccionado?.apellido}</Modal.Title>
         </Modal.Header>
         <Modal.Body>        
-          <TablaMascotas mascotas={mascotas}  handleVerHistoria={handleVerHistoria} handleEliminarMascota={handleEliminarMascota} abrirEditor={edicionMascotaClick}/>
+          <TablaMascotas mascotas={mascotas}  handleVerHistoria={handleVerHistoria} handleEliminarMascota={handleEliminarMascota} abrirEditor={edicionMascotaClick} handleVerRecetas={handleVerRecetas}/>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModalMascotas(false)}>
@@ -765,6 +790,65 @@ export default function AdminPage() {
           <Button variant="secondary" onClick={() => setShowEditMascota(false)}>Cerrar</Button>
           <Button className="btn-modificar" type="submit" form="form-edit-mascota">
             Actualizar Registro
+          </Button>
+        </Modal.Footer>
+      </Modal>
+       {/* Modal Ver Recetas */}
+      <Modal className="modal-ver-recetas" show={showModalRecetas} onHide={() => setShowModalRecetas(false)} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Recetas Médicas: {nombreMascotaReceta}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {loadingRecetas ? (
+            <div className="text-center py-3">
+              <Spinner animation="border" variant="primary" />
+              <p className="mt-2 text-muted mb-0">Cargando recetas...</p>
+            </div>
+          ) : recetasMascota.length === 0 ? (
+            <div className="p-3 bg-light border rounded text-center text-muted">
+              Esta mascota no tiene recetas registradas.
+            </div>
+          ) : (
+            <Table striped bordered hover responsive className="align-middle text-center mb-0">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Título</th>
+                  <th>Descripción</th>
+                  <th>Archivo PDF</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recetasMascota.map((receta) => (
+                  <tr key={receta._id}>
+                    <td>
+                      {receta.fecha 
+                        ? new Date(receta.fecha).toLocaleDateString("es-AR") 
+                        : receta.createdAt 
+                        ? new Date(receta.createdAt).toLocaleDateString("es-AR") 
+                        : "Sin fecha"}
+                    </td>
+                    <td><strong>{receta.titulo}</strong></td>
+                    <td>{receta.descripcion || "Sin observaciones"}</td>
+                    <td>
+                      <a
+                        href={receta.archivoUrl || receta.urlPdf || receta.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-ver fw-bold"
+                      >
+                        📄 Abrir PDF
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModalRecetas(false)}>
+            Cerrar
           </Button>
         </Modal.Footer>
       </Modal>

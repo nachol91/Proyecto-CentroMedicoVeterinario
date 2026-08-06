@@ -95,7 +95,7 @@ body {
 /* 3) Botón Ver de Historia no pisa columna contigua */
 .modal .table .btn-ver {
   min-width: 70px !important;
-  max-width: 90px !important;
+  max-width: 105px !important;
   padding: 0.25rem 0.4rem !important;
   white-space: nowrap !important;
   display: inline-block !important;

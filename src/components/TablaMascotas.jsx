@@ -1,7 +1,7 @@
 import { Table, Button } from "react-bootstrap";
 import "../styles/TablaMascotas.css"
 
-export default function TablaMascotas({ mascotas, handleEliminarMascota, abrirEditor, handleVerHistoria }) {
+export default function TablaMascotas({ mascotas, handleEliminarMascota, abrirEditor, handleVerHistoria, handleVerRecetas }) {
   return (
     <Table responsive bordered hover>
       <thead>
@@ -17,6 +17,7 @@ export default function TablaMascotas({ mascotas, handleEliminarMascota, abrirEd
           <th>Estado</th>
           <th>Historia</th>
           <th>Acciones</th>
+          <th>Recetas</th>
         </tr>
       </thead>
       <tbody>
@@ -59,6 +60,13 @@ export default function TablaMascotas({ mascotas, handleEliminarMascota, abrirEd
                       Eliminar
                     </Button>
                   </div>
+                </td>
+                <td>
+                  <Button 
+                    className="btn-ver"                     
+                    onClick={() => handleVerRecetas(mascota)}>
+                    📋 Ver Recetas
+                  </Button>
                 </td>
             </tr>
           );
